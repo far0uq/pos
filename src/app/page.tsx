@@ -1,5 +1,5 @@
-import AuthPage from "./auth/page";
+import MainPage from "./mainpage/page";
 
 export default function Home() {
-  return <AuthPage />;
+  return <MainPage />;
 }

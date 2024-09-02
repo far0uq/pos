@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Form, Input, Button, Flex, Space } from "antd";
+import { Form, Button, Flex} from "antd";
 import Item from "antd/lib/list/Item";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   getAuthURL,
-  handleCookiefication,
   handleGetAndSetToken,
-  handleObtainToken,
 } from "../clientAPI/authAPI";
 
 function AuthForm() {
