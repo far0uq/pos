@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ height: "100vh" }}>
+      <body style={{ height: "100vh" }}>
         <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
