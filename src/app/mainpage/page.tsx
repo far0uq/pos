@@ -8,11 +8,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function MainPage() {
+  const [query, setQuery] = React.useState("");
+  const [category, setCategory] = React.useState("0");
+
   return (
     <QueryClientProvider client={queryClient}>
       <Flex gap="large" style={{ width: "65%", margin: "auto" }} vertical>
-        <SearchBar />
-        <ItemContainer />
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          category={category}
+          setCategory={setCategory}
+        />
+        <ItemContainer query={query} category={category} />
       </Flex>
     </QueryClientProvider>
   );

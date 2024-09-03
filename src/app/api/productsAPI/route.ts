@@ -27,8 +27,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  console.log("POST request received");
   try {
-    const { query } = req.json();
+    const { query } = await req.json();
     const client = new Client({
       environment: Environment.Production,
       accessToken: process.env.NEXT_SERVER_ACCESS_TOKEN_PROD,
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
     const resp = await client.catalogApi.searchCatalogItems({
       textFilter: query,
     });
+
     const objects = resp.result.items;
     if (objects) {
       const cleanedObjects = cleanProductObjects(objects);
@@ -60,7 +62,8 @@ const cleanProductObjects = (objects: CatalogObject[]): Product[] => {
       id: object.id,
       name: object.itemData?.name as string,
       price: cleanedPrice,
-      image: "https://images.unsplash.com/photo-1612838320302-4b3b3b3b3b3b",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
     });
   });
   return cleanedObjects;
