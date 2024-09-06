@@ -4,3 +4,14 @@ export interface Product {
   price: number;
   image: string;
 }
+
+export interface CatalogProductAPI {
+  catalogObjectId: string;
+  name: string;
+  variations: {
+    price: {
+      amount: number;
+    };
+  }[];
+  image: string;
+}

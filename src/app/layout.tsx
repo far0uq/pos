@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Dorya Inc.",
@@ -16,10 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body style={{ height: "100vh" }}>
-        <AntdRegistry>{children}</AntdRegistry>
-      </body>
-    </html>
+      <html lang="en">
+        <body style={{ height: "100vh" }}>
+          <AntdRegistry>{children}</AntdRegistry>
+        </body>
+      </html>
   );
 }

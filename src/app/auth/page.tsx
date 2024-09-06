@@ -1,40 +1,48 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Form, Button, Flex} from "antd";
+import React, { useEffect, useCallback } from "react";
+import { Form, Button, Flex } from "antd";
 import Item from "antd/lib/list/Item";
 import { useSearchParams, useRouter } from "next/navigation";
-import {
-  getAuthURL,
-  handleGetAndSetToken,
-} from "../clientAPI/authAPI";
+import { handleGetAndSetToken } from "../clientAPI/authAPI";
+import lodash from "lodash";
 
 function AuthForm() {
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
-      const url = await getAuthURL();
+      const resp = await fetch("/api/authTokenAPI", {
+        method: "GET",
+      });
+
+      const { url } = await resp.json();
+
       window.open(url);
     } catch (error) {
       console.error("Error: ", error);
     }
-  };
+  }, []);
 
   const params = useSearchParams();
   const router = useRouter();
 
-  const getParamAndCall = async () => {
+  const getParamAndCall = useCallback(async () => {
+    console.log("ENTERED CALLBACK");
     if (params.get("code")) {
-      const authCode = params.get("code") as string;
+      let authCode;
+      authCode = params.get("code") as string;
+      console.log(authCode);
       const resp = await handleGetAndSetToken(authCode);
       if (resp.status === 200) {
         console.log("Success");
         router.push("/mainpage");
       }
     }
-  };
+  }, [params, router]);
+
+  const debouncedGetParamAndCall = lodash.debounce(getParamAndCall, 1500);
 
   useEffect(() => {
-    getParamAndCall();
+    debouncedGetParamAndCall();
   }, []);
 
   return (
