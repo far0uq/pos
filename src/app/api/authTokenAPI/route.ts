@@ -1,44 +1,64 @@
-import { Client, Environment } from "square";
 import { NextResponse } from "next/server";
+import { getSession } from "./session";
 
 export async function POST(req: Request) {
   try {
-    const client = new Client({
-      environment: Environment.Production,
-      userAgentDetail: "Dorya Inc.",
-    });
+    const { authenticationCode } = await req.json();
+    console.log("AUTHCODE RECIEVED" + authenticationCode);
 
-    const { codeVerifier, authenticationCode } = await req.json();
-
-    const authInfoRecieved = codeVerifier && authenticationCode;
-
-    if (authInfoRecieved) {
-      const response = await client.oAuthApi.obtainToken({
-        clientId: "sq0idp-tDr6r_tlpCjHD9tDQrV8mg",
-        grantType: "authorization_code",
-        codeVerifier: codeVerifier,
-        code: authenticationCode,
-        scopes: ["MERCHANT_PROFILE_READ"],
-        redirectUri: "http://localhost:3000/auth",
-        shortLived: true,
+    if (authenticationCode) {
+      const url = `http://localhost:5000/api/access-token?code=${authenticationCode}`;
+      const response = await fetch(url, {
+        method: "GET",
       });
+
+      const { result, success } = await response.json();
+      console.log(result);
+      console.log(success);
+
+      if (!success) {
+        throw new Error(
+          "Tried but Failed to obtain token, Check the authentication code."
+        );
+      }
+
+      // Save token in session here
+      const session = await getSession();
+      session.token = result.token;
+      await session.save();
+
+      console.log(session);
 
       return NextResponse.json(
         {
-          accessToken: response.result.accessToken,
-          refreshToken: response.result.refreshToken,
-          expiresAt: response.result.expiresAt,
-          merchantId: response.result.merchantId,
+          data: {
+            message: "Token obtained successfully",
+          },
         },
-        { status: response.statusCode }
+        { status: 200 }
       );
+      // Save data in server session here
     } else {
       throw new Error(
-        "Either codeVerifier or authenticationCode (or both) not provided."
+        "No authentication code provided. Check the request body."
       );
     }
   } catch (error) {
     console.error(error);
     return NextResponse.json({ status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "GET",
+    });
+
+    const { result } = await response.json();
+    return NextResponse.json({ url: result.url }, { status: 200 });
+  } catch (error) {
+    console.error("Error: ", error);
+    return NextResponse.json({ status: 500, error });
   }
 }

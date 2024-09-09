@@ -4,6 +4,7 @@ import Item from "./Item";
 import { Flex } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "@/app/interface/ProductInterface";
+import ItemsLoading from "./loading/ItemsLoading";
 
 function ItemContainer({
   query,
@@ -42,7 +43,7 @@ function ItemContainer({
     queryFn: handleCallProductAPI,
   });
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending) return <ItemsLoading />;
   if (error) return <div>Error: {error.message}</div>;
   else {
     console.log(data);

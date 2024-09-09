@@ -1,35 +1,34 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Client, Environment } from "square";
-import { cookies } from "next/headers";
+import { getSession } from "./app/api/authTokenAPI/session";
+import * as jose from "jose";
 
 export async function middleware(req: NextRequest) {
-  const cookieStore = cookies();
+  console.log("Middleware entered");
   try {
-    const accessToken = cookieStore.get("accessToken")?.value as string;
-    const merchantId = cookieStore.get("merchantId")?.value as string;
+    const session = await getSession();
 
-    const accessInfoMissing = !accessToken && !merchantId;
-    const accessInfoPresent = accessToken && merchantId;
-
-    if (accessInfoMissing) {
-      throw new Error("Access Info Missing");
-    } else if (accessInfoPresent) {
-      const client = new Client({
-        environment: Environment.Production,
-        accessToken: accessToken,
-      });
-
-      const response = await client.merchantsApi.retrieveMerchant(merchantId);
-
-      if (response.statusCode === 200) {
-        return NextResponse.next();
-      } else {
-        throw new Error(
-          "Either Scope doesnt have access to Merchant Reading or Token Information is Incorrect."
-        );
-      }
+    if (!session) {
+      throw new Error("Session is missing.");
+    } else if (!session.token) {
+      throw new Error("Session token is missing.");
     }
+    const token = session.token;
+    console.log("Token in middleware: " + token);
+
+    const secret = process.env.NEXTAUTH_SECRET as string;
+
+    console.log("Secret: " + secret);
+
+    const res = await jose.jwtVerify(token, new TextEncoder().encode(secret));
+
+    if (!res.payload) {
+      throw new Error(
+        "Token could not be verified. There is a discrepancy in the secret or the token is not present."
+      );
+    }
+
+    return NextResponse.next();
   } catch (error) {
     console.log(error);
     return NextResponse.redirect(new URL("/auth", req.url));
