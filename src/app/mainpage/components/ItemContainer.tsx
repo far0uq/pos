@@ -2,9 +2,11 @@
 import React from "react";
 import Item from "./Item";
 import { Flex } from "antd";
-import { useQuery } from "@tanstack/react-query";
-import { Product } from "@/app/interface/ProductInterface";
+import { useEffect } from "react";
+import { Product, ProductGroup } from "@/app/interface/ProductInterface";
 import ItemsLoading from "./loading/ItemsLoading";
+import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 function ItemContainer({
   query,
@@ -13,11 +15,20 @@ function ItemContainer({
   query: string;
   category: string;
 }) {
-  console.log("ITEMCONTAINER", query);
-  const handleCallProductAPI = async () => {
-    console.log("IN PRODUCT CALL");
-    if (query) {
-      const resp = await fetch("/api/productsAPI", {
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  const handleCallProductAPI = async ({ pageParam }: { pageParam: string }) => {
+    console.log(query);
+    console.log(category);
+    if (query !== "" || category !== "0") {
+      console.log("query or category");
+      const resp = await fetch(`/api/productsAPI?pageParam=${pageParam}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,20 +38,35 @@ function ItemContainer({
           category: category,
         }),
       });
-      return await resp.json();
+      const response = await resp.json();
+      return response;
     } else {
-      const resp = await fetch("/api/productsAPI", {
+      const resp = await fetch(`/api/productsAPI?pageParam=${pageParam}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      return await resp.json();
+      const response = await resp.json();
+      console.log(response);
+      return response;
     }
   };
-  const { isPending, error, data } = useQuery({
-    queryKey: [query],
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    isPending,
+  } = useInfiniteQuery({
+    queryKey: [query, category],
     queryFn: handleCallProductAPI,
+    initialPageParam: "",
+    getNextPageParam: (lastPage) => lastPage.cursor,
   });
 
   if (isPending) return <ItemsLoading />;
@@ -50,9 +76,21 @@ function ItemContainer({
   }
   return (
     <Flex wrap gap="large" style={{ width: "fit-content" }}>
-      {data.result.map((item: Product) => (
-        <Item key={item.id} item={item} />
-      ))}
+      {data.pages.map((group: ProductGroup, groupIndex: number) =>
+        group.result.map((item: Product, itemIndex: number) =>
+          groupIndex === data.pages.length - 1 &&
+          itemIndex === group.result.length - 1 ? (
+            <div key={item.id} ref={ref}>
+              <Item item={item} />
+            </div>
+          ) : (
+            <div key={item.id}>
+              <Item item={item} />
+            </div>
+          )
+        )
+      )}
+      {isFetchingNextPage ? <ItemsLoading /> : null}
     </Flex>
   );
 }

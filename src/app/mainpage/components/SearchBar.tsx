@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SearchOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Select, Tooltip, Button, Form } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useQuery } from "@tanstack/react-query";
 
 function SearchBar({
   query,
@@ -14,7 +15,27 @@ function SearchBar({
   category: string;
   setCategory: (category: string) => void;
 }) {
+  const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
+
+  const fetchCategories = async () => {
+    try {
+      const resp = await fetch("/api/categoriesAPI", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const response = await resp.json();
+      setCategories(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   interface SearchFormat {
     query: string;
@@ -26,7 +47,8 @@ function SearchBar({
     if (values.query !== query) {
       setQuery(values.query);
       console.log("Setting query");
-    } else if (values.category !== category) setCategory(values.category);
+    }
+    if (values.category !== category) setCategory(values.category);
   };
 
   return (
@@ -48,21 +70,17 @@ function SearchBar({
         <Col offset={2} span={3}>
           <FormItem name="category">
             <Select
-              defaultValue="0"
-              options={[
-                {
-                  value: "0",
-                  label: "Category",
-                },
-                {
-                  value: "1",
-                  label: "Price",
-                },
-                {
-                  value: "2",
-                  label: "Quantity",
-                },
-              ]}
+              defaultValue="Category"
+              options={
+                categories
+                  ? categories
+                  : [
+                      {
+                        value: "loading",
+                        label: "Loading Categories...",
+                      },
+                    ]
+              }
               style={{ width: "100%" }}
             />
           </FormItem>

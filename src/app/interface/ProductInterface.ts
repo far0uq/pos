@@ -15,3 +15,8 @@ export interface CatalogProductAPI {
   }[];
   image: string;
 }
+
+export interface ProductGroup {
+  result: Product[];
+  cursor: string;
+}
