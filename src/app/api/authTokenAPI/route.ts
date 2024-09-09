@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "./session";
+import { getSession } from "./utils/sessionHelper";
 
 export async function POST(req: Request) {
   try {

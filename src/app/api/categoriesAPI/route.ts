@@ -1,19 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  CategoryFormatted,
-  CategoryRaw,
-} from "@/app/interface/CategoryInterface";
-
-const formatCategories = (categories: CategoryRaw[]) => {
-  const formattedCategories: CategoryFormatted[] = [];
-  categories.forEach((category) => {
-    formattedCategories.push({
-      value: category.id,
-      label: category.name,
-    });
-  });
-  return formattedCategories;
-};
+import { formatCategories } from "./utils/categoryHelper";
 
 export async function GET() {
   try {
