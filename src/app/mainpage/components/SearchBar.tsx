@@ -52,9 +52,18 @@ function SearchBar({
   };
 
   return (
-    <Form form={form} onFinish={handleSaveQuery}>
-      <Row style={{ width: "100%", margin: "auto" }}>
-        <Col span={15}>
+    <Form
+      form={form}
+      onFinish={handleSaveQuery}
+      style={{
+        marginTop: "20px",
+      }}
+    >
+      <Row
+        style={{ width: "100%", margin: "auto" }}
+        gutter={{ xs: 7, sm: 7, lg: 7 }}
+      >
+        <Col xs={24} sm={15}>
           <FormItem name="query">
             <Input
               placeholder="Search"
@@ -67,7 +76,7 @@ function SearchBar({
             />
           </FormItem>
         </Col>
-        <Col offset={2} span={3}>
+        <Col xs={12} sm={{ span: 4, offset: 1 }} lg={{ span: 3, offset: 3 }}>
           <FormItem name="category">
             <Select
               defaultValue="Category"
@@ -85,7 +94,7 @@ function SearchBar({
             />
           </FormItem>
         </Col>
-        <Col offset={1} span={3}>
+        <Col xs={12} sm={4} lg={3}>
           <FormItem>
             <Button type="primary" style={{ width: "100%" }} htmlType="submit">
               Search
