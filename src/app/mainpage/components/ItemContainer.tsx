@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
 import Item from "./Item";
-import { Flex } from "antd";
+import { Flex, Grid } from "antd";
 import { useEffect } from "react";
 import { Product, ProductGroup } from "@/app/interface/ProductInterface";
 import ItemsLoading from "./loading/ItemsLoading";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+
+const { useBreakpoint } = Grid;
 
 function ItemContainer({
   query,
@@ -15,6 +17,7 @@ function ItemContainer({
   query: string;
   category: string;
 }) {
+  const screens = useBreakpoint();
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ function ItemContainer({
   const handleCallProductAPI = async ({ pageParam }: { pageParam: string }) => {
     console.log(query);
     console.log(category);
-    if (query !== "" || category !== "0") {
+    if ((query && query !== "") || category !== "0") {
       console.log("query or category");
       const resp = await fetch(`/api/productsAPI?pageParam=${pageParam}`, {
         method: "POST",
@@ -39,6 +42,7 @@ function ItemContainer({
         }),
       });
       const response = await resp.json();
+      console.log(response);
       return response;
     } else {
       const resp = await fetch(`/api/productsAPI?pageParam=${pageParam}`, {
@@ -74,26 +78,40 @@ function ItemContainer({
   else {
     console.log(data);
   }
+
   return (
-    <Flex wrap justify="space-between" style={{ width: "100%" }}>
-      {data
-        ? data.pages.map((group: ProductGroup, groupIndex: number) =>
-            group && group.result
-              ? group.result.map((item: Product, itemIndex: number) =>
-                  groupIndex === data.pages.length - 1 &&
-                  itemIndex === group.result.length - 1 ? (
-                    // <div key={item.id} ref={ref} style={cardStyle}>
-                    <Item item={item} key={item.id} ref={ref} />
-                  ) : (
-                    // </div>
-                    // <div key={item.id} style={cardStyle}>
-                    <Item item={item} key={item.id} />
-                    // </div>
-                  )
-                )
-              : null
+    <Flex wrap gap={screens.lg ? "2%" : "0%"} style={{ width: "100%" }}>
+      {data && data.pages[0].result.length > 0 ? (
+        data.pages.map((group: ProductGroup, groupIndex: number) =>
+          group.result.map((item: Product, itemIndex: number) =>
+            groupIndex === data.pages.length - 1 &&
+            itemIndex === group.result.length - 1 ? (
+              <div
+                ref={ref}
+                key={item.id}
+                style={{
+                  width: screens.lg ? "18%" : "100%",
+                  marginTop: "20px",
+                }}
+              >
+                <Item item={item} />
+              </div>
+            ) : (
+              <div
+                key={item.id}
+                style={{
+                  width: screens.lg ? "18%" : "100%",
+                  marginTop: "20px",
+                }}
+              >
+                <Item item={item} key={item.id} />
+              </div>
+            )
           )
-        : null}
+        )
+      ) : (
+        <p>No results.</p>
+      )}
       {isFetchingNextPage ? <ItemsLoading /> : null}
     </Flex>
   );

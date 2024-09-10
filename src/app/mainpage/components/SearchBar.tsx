@@ -82,7 +82,13 @@ function SearchBar({
               defaultValue="Category"
               options={
                 categories
-                  ? categories
+                  ? [
+                      {
+                        value: "0",
+                        label: "All Categories",
+                      },
+                      ...categories,
+                    ]
                   : [
                       {
                         value: "loading",

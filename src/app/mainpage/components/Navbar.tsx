@@ -1,13 +1,23 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import { Button, Divider, Row, Col } from "antd";
+import { Button, Divider, Row, Col, Grid } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
 
+const { useBreakpoint } = Grid;
+
 function Navbar() {
+  const screens = useBreakpoint();
+
   return (
     <>
-      <Row style={{ width: "65%", margin: "20px auto auto auto" }}>
+      <Row
+        style={{
+          width: screens.sm ? "65%" : "90%",
+          margin: "20px auto auto auto",
+        }}
+      >
         <Col xs={12} sm={8} lg={10}>
           <Image
             style={{ paddingTop: "10px" }}

@@ -43,11 +43,14 @@ export async function POST(req: Request) {
   try {
     const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
 
-    const { query, category } = await req.json();
+    let { query, category } = await req.json();
     const { searchParams } = new URL(req.url);
     let cursor = searchParams.get("pageParam") ?? "";
+    query = query ?? "";
+    category = category === 0 ? "" : category;
 
     const url = `http://localhost:5000/api/search-catalog-items?textFilter=${query}&categoryId=${category}&cursor=${cursor}`;
+    console.log(url);
 
     const resp = await fetch(url, {
       method: "GET",

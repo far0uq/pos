@@ -13,13 +13,7 @@ enum Quantity {
   decrease = "sub",
 }
 
-function Item({
-  item,
-  ref,
-}: {
-  item: Product;
-  ref?: (node?: Element | null) => void;
-}) {
+function Item({ item }: { item: Product }) {
   const [quantity, setQuantity] = useState(0);
   const toggleQuantity = (type: string) => {
     if (type === "add") {
@@ -32,41 +26,36 @@ function Item({
   const screens = useBreakpoint();
 
   return (
-    <div
-      ref={ref}
-      style={{ width: screens.lg ? "18%" : "100%", marginTop: "20px" }}
+    <Card
+      title={item.name}
+      style={{ width: "100%" }}
+      actions={[
+        <MinusCircleOutlined
+          key="minus"
+          onClick={() => toggleQuantity(Quantity.decrease)}
+        />,
+        <PlusCircleOutlined
+          key="add"
+          onClick={() => toggleQuantity(Quantity.increase)}
+        />,
+      ]}
+      cover={
+        screens.lg ? (
+          <Image
+            width={"100%"}
+            height={"auto"}
+            src={item.image}
+            alt="game"
+            preview={false}
+          />
+        ) : null
+      }
     >
-      <Card
-        title={item.name}
-        style={{ width: "100%" }}
-        actions={[
-          <MinusCircleOutlined
-            key="minus"
-            onClick={() => toggleQuantity(Quantity.decrease)}
-          />,
-          <PlusCircleOutlined
-            key="add"
-            onClick={() => toggleQuantity(Quantity.increase)}
-          />,
-        ]}
-        cover={
-          screens.lg ? (
-            <Image
-              width={"100%"}
-              height={"auto"}
-              src={item.image}
-              alt="game"
-              preview={false}
-            />
-          ) : null
-        }
-      >
-        <Meta
-          title={item.price ? item.price : "Free"}
-          description={`Quantity: ${quantity}`}
-        />
-      </Card>
-    </div>
+      <Meta
+        title={item.price ? item.price : "Free"}
+        description={`Quantity: ${quantity}`}
+      />
+    </Card>
   );
 }
 

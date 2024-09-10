@@ -1,14 +1,54 @@
 import React from "react";
-import { Skeleton, Flex } from "antd";
+import { Skeleton, Flex, Grid } from "antd";
+import "./ItemsLoading.css";
+
+const { useBreakpoint } = Grid;
 
 function ItemsLoading() {
+  const screens = useBreakpoint();
+
   return (
-    <Flex wrap gap="large" style={{ width: "fit-content" }}>
-      <Skeleton.Button active={true} style={{ width: 230, height: 320 }} />
-      <Skeleton.Button active={true} style={{ width: 230, height: 320 }} />
-      <Skeleton.Button active={true} style={{ width: 230, height: 320 }} />
-      <Skeleton.Button active={true} style={{ width: 230, height: 320 }} />
-      <Skeleton.Button active={true} style={{ width: 230, height: 320 }} />
+    <Flex wrap gap={screens.lg ? "2%" : "0%"} style={{ width: "100%" }} className="loading-bar">
+      <Skeleton.Button
+      active={true}
+        style={{
+          width: "100%",
+          height: 280,
+          marginTop: "20px",
+        }}
+      />
+      <Skeleton.Button
+        active={true}
+        style={{
+          width: "100%",
+          height: 280,
+          marginTop: "20px",
+        }}
+      />
+      <Skeleton.Button
+        active={true}
+        style={{
+          width: "100%",
+          height: 280,
+          marginTop: "20px",
+        }}
+      />
+      <Skeleton.Button
+        active={true}
+        style={{
+          width: "100%",
+          height: 280,
+          marginTop: "20px",
+        }}
+      />
+      <Skeleton.Button
+        active={true}
+        style={{
+          width: "100%",
+          height: 280,
+          marginTop: "20px",
+        }}
+      />
     </Flex>
   );
 }
