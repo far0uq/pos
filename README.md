@@ -16,21 +16,25 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+This app uses the [Costa API's](https://github.com/carbonteq/costa-oil-api) Square API's to work. To run the application correctly, you must clone the aforementioned repository and run the following command:
 
-## Learn More
+```bash
 
-To learn more about Next.js, take a look at the following resources:
+npm run start:dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Also make sure a redis server is running before since it requires you to have one in the background. For that, open a new terminal, and do the following:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+sudo apt-get install redis-server
+#to start the server
+redis-server
+```
 
-## Deploy on Vercel
+## Functionality
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Authorize the Seller using the OAuth API provided by Square.
+- Allow the User to Search by Query and/or by Category.
+- Display a list of Products fetched directly from the Square Seller Dashboard.

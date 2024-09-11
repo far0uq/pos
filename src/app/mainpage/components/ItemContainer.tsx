@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Item from "./Item";
-import { Flex, Grid } from "antd";
+import { Flex, Grid, theme } from "antd";
 import { useEffect } from "react";
 import { Product, ProductGroup } from "@/app/interface/ProductInterface";
 import ItemsLoading from "./loading/ItemsLoading";
@@ -9,6 +9,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const { useBreakpoint } = Grid;
+const { useToken } = theme;
 
 function ItemContainer({
   query,
@@ -17,6 +18,7 @@ function ItemContainer({
   query: string;
   category: string;
 }) {
+  const { token } = useToken();
   const screens = useBreakpoint();
   const { ref, inView } = useInView();
 
@@ -81,7 +83,7 @@ function ItemContainer({
 
   return (
     <Flex wrap gap={screens.lg ? "2%" : "0%"} style={{ width: "100%" }}>
-      {data && data.pages[0].result.length > 0 ? (
+      {data && data.pages[0].result && data.pages[0].result.length > 0 ? (
         data.pages.map((group: ProductGroup, groupIndex: number) =>
           group.result.map((item: Product, itemIndex: number) =>
             groupIndex === data.pages.length - 1 &&
@@ -110,7 +112,7 @@ function ItemContainer({
           )
         )
       ) : (
-        <p>No results.</p>
+        <p style={{ fontSize: token.fontSize }}>No results.</p>
       )}
       {isFetchingNextPage ? <ItemsLoading /> : null}
     </Flex>
