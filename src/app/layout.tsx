@@ -13,10 +13,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
-        <body style={{ height: "100vh" }}>
-          <AntdRegistry>{children}</AntdRegistry>
-        </body>
-      </html>
+    <html lang="en">
+      <head>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701,900,901,1,2&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ height: "100vh", fontSize: "2vw" }}>
+        <AntdRegistry>{children}</AntdRegistry>
+      </body>
+    </html>
   );
 }

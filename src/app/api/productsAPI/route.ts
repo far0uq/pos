@@ -1,34 +1,14 @@
-import { Client, Environment } from "square";
 import { NextResponse } from "next/server";
-import { Product, CatalogProductAPI } from "@/app/interface/ProductInterface";
-import { CatalogObject } from "square";
+import { cleanProductObjects } from "./utils/productHelper";
 
-const cleanProductObjects = (objects: CatalogProductAPI[]): Product[] => {
-  const cleanedObjects: Product[] = [];
-  objects.forEach((object) => {
-    // const cleanedPrice = object.itemData?.variations?.[0]?.itemVariationData
-    //   ?.priceMoney?.amount
-    //   ? Number(
-    //       object.itemData.variations[0].itemVariationData.priceMoney.amount
-    //     ) / 100
-    //   : 0;
-    cleanedObjects.push({
-      id: object.catalogObjectId,
-      name: object.name,
-      price: object.variations[0].price.amount,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
-    });
-  });
-  return cleanedObjects;
-};
-
-export async function GET() {
+export async function GET(req: Request) {
   console.log("GET request received");
   try {
     const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
+    const { searchParams } = new URL(req.url);
+    let cursor = searchParams.get("pageParam");
 
-    const url = "http://localhost:5000/api/search-catalog-items";
+    const url = `http://localhost:5000/api/search-catalog-items?cursor=${cursor}`;
 
     const resp = await fetch(url, {
       method: "GET",
@@ -41,10 +21,14 @@ export async function GET() {
     const { result } = await resp.json();
 
     const objects = result.items;
+    cursor = result.cursor === "" ? null : result.cursor;
 
     if (objects) {
       const cleanedObjects = cleanProductObjects(objects);
-      return NextResponse.json({ result: cleanedObjects }, { status: 200 });
+      return NextResponse.json(
+        { result: cleanedObjects, cursor },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ result: [] }, { status: 200 });
     }
@@ -59,9 +43,14 @@ export async function POST(req: Request) {
   try {
     const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
 
-    const { query } = await req.json();
+    let { query, category } = await req.json();
+    const { searchParams } = new URL(req.url);
+    let cursor = searchParams.get("pageParam") ?? "";
+    query = query ?? "";
+    category = category === 0 ? "" : category;
 
-    const url = `http://localhost:5000/api/search-catalog-items?textFilter=${query}`;
+    const url = `http://localhost:5000/api/search-catalog-items?textFilter=${query}&categoryId=${category}&cursor=${cursor}`;
+    console.log(url);
 
     const resp = await fetch(url, {
       method: "GET",
@@ -72,12 +61,16 @@ export async function POST(req: Request) {
     });
 
     const { result } = await resp.json();
+    cursor = result.cursor === "" ? null : result.cursor;
 
     const objects = result.items;
 
     if (objects) {
       const cleanedObjects = cleanProductObjects(objects);
-      return NextResponse.json({ result: cleanedObjects }, { status: 200 });
+      return NextResponse.json(
+        { result: cleanedObjects, cursor },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ result: [] }, { status: 200 });
     }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getSession } from "./app/api/authTokenAPI/session";
+import { getSession } from "./app/api/authTokenAPI/utils/sessionHelper";
 import * as jose from "jose";
 
 export async function middleware(req: NextRequest) {

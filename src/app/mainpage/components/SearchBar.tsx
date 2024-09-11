@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SearchOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Select, Tooltip, Button, Form } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useQuery } from "@tanstack/react-query";
 
 function SearchBar({
   query,
@@ -14,7 +15,27 @@ function SearchBar({
   category: string;
   setCategory: (category: string) => void;
 }) {
+  const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
+
+  const fetchCategories = async () => {
+    try {
+      const resp = await fetch("/api/categoriesAPI", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const response = await resp.json();
+      setCategories(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   interface SearchFormat {
     query: string;
@@ -26,13 +47,23 @@ function SearchBar({
     if (values.query !== query) {
       setQuery(values.query);
       console.log("Setting query");
-    } else if (values.category !== category) setCategory(values.category);
+    }
+    if (values.category !== category) setCategory(values.category);
   };
 
   return (
-    <Form form={form} onFinish={handleSaveQuery}>
-      <Row style={{ width: "100%", margin: "auto" }}>
-        <Col span={15}>
+    <Form
+      form={form}
+      onFinish={handleSaveQuery}
+      style={{
+        marginTop: "20px",
+      }}
+    >
+      <Row
+        style={{ width: "100%", margin: "auto" }}
+        gutter={{ xs: 7, sm: 7, lg: 7 }}
+      >
+        <Col xs={24} sm={15}>
           <FormItem name="query">
             <Input
               placeholder="Search"
@@ -45,29 +76,31 @@ function SearchBar({
             />
           </FormItem>
         </Col>
-        <Col offset={2} span={3}>
+        <Col xs={12} sm={{ span: 4, offset: 1 }} lg={{ span: 3, offset: 3 }}>
           <FormItem name="category">
             <Select
-              defaultValue="0"
-              options={[
-                {
-                  value: "0",
-                  label: "Category",
-                },
-                {
-                  value: "1",
-                  label: "Price",
-                },
-                {
-                  value: "2",
-                  label: "Quantity",
-                },
-              ]}
+              defaultValue="Category"
+              options={
+                categories
+                  ? [
+                      {
+                        value: "0",
+                        label: "All Categories",
+                      },
+                      ...categories,
+                    ]
+                  : [
+                      {
+                        value: "loading",
+                        label: "Loading Categories...",
+                      },
+                    ]
+              }
               style={{ width: "100%" }}
             />
           </FormItem>
         </Col>
-        <Col offset={1} span={3}>
+        <Col xs={12} sm={4} lg={3}>
           <FormItem>
             <Button type="primary" style={{ width: "100%" }} htmlType="submit">
               Search
