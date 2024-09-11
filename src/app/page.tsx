@@ -1,5 +1,5 @@
 import { ConfigProvider } from "antd";
-import MainPage from "./mainpage/page";
+import CartContainer from "./mainpage/components/cart/CartContainer";
 import Navbar from "./mainpage/components/Navbar";
 
 export default function Home() {
@@ -30,7 +30,6 @@ export default function Home() {
       }}
     >
       <Navbar />
-      <MainPage />
     </ConfigProvider>
   );
 }

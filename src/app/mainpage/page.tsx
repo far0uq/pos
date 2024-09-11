@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import ItemContainer from "./components/ItemContainer";
+import ItemContainer from "./components/items/ItemContainer";
 import SearchBar from "./components/SearchBar";
 import { Flex, Grid } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

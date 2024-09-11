@@ -1,15 +1,14 @@
 "use client";
 import React from "react";
 import Item from "./Item";
-import { Flex, Grid, theme } from "antd";
+import { Empty, Flex, Grid } from "antd";
 import { useEffect } from "react";
 import { Product, ProductGroup } from "@/app/interface/ProductInterface";
-import ItemsLoading from "./loading/ItemsLoading";
+import ItemsLoading from "../loading/ItemsLoading";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const { useBreakpoint } = Grid;
-const { useToken } = theme;
 
 function ItemContainer({
   query,
@@ -18,7 +17,6 @@ function ItemContainer({
   query: string;
   category: string;
 }) {
-  const { token } = useToken();
   const screens = useBreakpoint();
   const { ref, inView } = useInView();
 
@@ -112,7 +110,7 @@ function ItemContainer({
           )
         )
       ) : (
-        <p style={{ fontSize: token.fontSize }}>No results.</p>
+        <Empty />
       )}
       {isFetchingNextPage ? <ItemsLoading /> : null}
     </Flex>

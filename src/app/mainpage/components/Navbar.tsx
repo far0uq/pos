@@ -1,14 +1,18 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Button, Divider, Row, Col, Grid } from "antd";
+import { Button, Divider, Row, Col, Grid, Drawer } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
+import CartContainer from "./cart/CartContainer";
 
 const { useBreakpoint } = Grid;
 
 function Navbar() {
   const screens = useBreakpoint();
+  const [open, setOpen] = useState(false);
+  const openDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
 
   return (
     <>
@@ -31,13 +35,21 @@ function Navbar() {
           sm={{ span: 2, offset: 11 }}
           lg={{ span: 1, offset: 11 }}
         >
-          <Button type="text" style={{ width: "100%" }}>
+          <Button type="text" style={{ width: "100%" }} onClick={openDrawer}>
             <ShoppingCartOutlined
               style={{
                 fontSize: 30,
               }}
             />
           </Button>
+          <Drawer
+            onClose={closeDrawer}
+            open={open}
+            closable={false}
+            width={"500px"}
+          >
+            <CartContainer />
+          </Drawer>
         </Col>
         <Col
           xs={{ span: 4 }}

@@ -27,7 +27,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-intersection-observer": "^9.13.1",
-    "square": "^38.0.0"
+    "square": "^38.0.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.6",
