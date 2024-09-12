@@ -1,6 +1,9 @@
 import { ConfigProvider } from "antd";
 import CartContainer from "./mainpage/components/cart/CartContainer";
 import Navbar from "./mainpage/components/Navbar";
+import MainPage from "./mainpage/page";
+import DiscountContainer from "./mainpage/components/cart/DiscountContainer";
+import TaxContainer from "./mainpage/components/cart/TaxContainer";
 
 export default function Home() {
   return (
@@ -29,7 +32,8 @@ export default function Home() {
         },
       }}
     >
-      <Navbar />
+      <DiscountContainer />
+      <TaxContainer />
     </ConfigProvider>
   );
 }

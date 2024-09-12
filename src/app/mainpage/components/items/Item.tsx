@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Card, Image, Grid } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
+import { useTotalStore } from "@/app/store/store";
 
 const { Meta } = Card;
 const { useBreakpoint } = Grid;
@@ -14,12 +15,17 @@ enum Quantity {
 }
 
 function Item({ item }: { item: Product }) {
-  const [quantity, setQuantity] = useState(0);
+  const quantityCount = useTotalStore((state) => state.quantityCounts);
+  const addProduct = useTotalStore((state) => state.addProduct);
+  const removeProduct = useTotalStore((state) => state.removeProduct);
+
   const toggleQuantity = (type: string) => {
     if (type === "add") {
-      setQuantity(quantity + 1);
+      addProduct(item);
+      // Fetch Quantity Here
     } else if (type === "sub") {
-      quantity - 1 >= 0 && setQuantity(quantity - 1);
+      removeProduct(item);
+      // Fetch Quantity Here
     }
   };
 
@@ -53,7 +59,7 @@ function Item({ item }: { item: Product }) {
     >
       <Meta
         title={item.price ? item.price : "Free"}
-        description={`Quantity: ${quantity}`}
+        description={`Quantity: ${quantityCount.get(item.id) ?? 0}`}
       />
     </Card>
   );

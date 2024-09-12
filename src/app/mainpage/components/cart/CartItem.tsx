@@ -2,17 +2,27 @@
 import { Product } from "@/app/interface/ProductInterface";
 import { Card, Flex, Image, theme } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { useTotalStore } from "@/app/store/store";
 
 const { Meta } = Card;
 const { useToken } = theme;
 
-function CartItem({ item }: { item: Product }) {
+function CartItem({
+  item,
+  itemQuantity,
+}: {
+  item: Product;
+  itemQuantity: number;
+}) {
   const { token } = useToken();
+  const addProduct = useTotalStore((state) => state.addProduct);
+  const removeProduct = useTotalStore((state) => state.removeProduct);
+
   return (
     <Card
       actions={[
-        <MinusCircleOutlined key="minus" />,
-        <PlusCircleOutlined key="add" />,
+        <MinusCircleOutlined key="minus" onClick={() => removeProduct(item)} />,
+        <PlusCircleOutlined key="add" onClick={() => addProduct(item)} />,
         <p style={{ color: "black" }} key="price">
           {item.price}
         </p>,
@@ -30,7 +40,9 @@ function CartItem({ item }: { item: Product }) {
 
         <Flex vertical>
           <Meta title={item.name} />
-          <p style={{ fontWeight: "bolder", color: "gray" }}>x 2</p>
+          <p style={{ fontWeight: "bolder", color: "gray" }}>
+            x {itemQuantity}
+          </p>
         </Flex>
       </Flex>
     </Card>
