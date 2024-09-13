@@ -6,7 +6,6 @@ import DiscountDropdown from "./DiscountDropdown";
 const queryClient = new QueryClient();
 
 function DiscountContainer() {
-
   return (
     <QueryClientProvider client={queryClient}>
       <DiscountDropdown />

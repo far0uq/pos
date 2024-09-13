@@ -24,5 +24,6 @@ export interface ProductGroup {
 }
 
 export interface CartProduct extends Product {
-  quantity: number;
+  appliedTaxes: string[];
+  appliedDiscounts: string[];
 }

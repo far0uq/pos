@@ -32,8 +32,8 @@ export default function Home() {
         },
       }}
     >
-      <DiscountContainer />
-      <TaxContainer />
+      <Navbar />
+      <MainPage />
     </ConfigProvider>
   );
 }

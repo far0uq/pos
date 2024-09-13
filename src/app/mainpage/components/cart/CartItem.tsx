@@ -3,6 +3,10 @@ import { Product } from "@/app/interface/ProductInterface";
 import { Card, Flex, Image, theme } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useTotalStore } from "@/app/store/store";
+import TaxDropdown from "./TaxDropdown";
+import DiscountDropdown from "./DiscountDropdown";
+import { TaxQuery } from "@/app/interface/TaxInterface";
+import { DiscountQuery } from "@/app/interface/DiscountInterface";
 
 const { Meta } = Card;
 const { useToken } = theme;
@@ -10,9 +14,13 @@ const { useToken } = theme;
 function CartItem({
   item,
   itemQuantity,
+  taxes,
+  discounts,
 }: {
   item: Product;
   itemQuantity: number;
+  taxes: TaxQuery;
+  discounts: DiscountQuery;
 }) {
   const { token } = useToken();
   const addProduct = useTotalStore((state) => state.addProduct);
@@ -45,6 +53,9 @@ function CartItem({
           </p>
         </Flex>
       </Flex>
+
+      <DiscountDropdown discounts={discounts} productID={item.id} />
+      <TaxDropdown taxes={taxes} productID={item.id} />
     </Card>
   );
 }

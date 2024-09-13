@@ -1,6 +1,5 @@
-import { handleFetchTaxes } from "@/app/clientAPI/taxAPI";
-import { TaxOption } from "@/app/interface/TaxInterface";
-import { useQuery } from "@tanstack/react-query";
+import { TaxOption, TaxQuery } from "@/app/interface/TaxInterface";
+import { useTotalStore } from "@/app/store/store";
 import { Select } from "antd";
 
 const loadingOptions: TaxOption[] = [
@@ -17,35 +16,48 @@ const noTaxesOptions: TaxOption[] = [
   },
 ];
 
-function TaxDropdown() {
-  const { data, error, isError, isLoading } = useQuery({
-    queryKey: ["discounts"],
-    queryFn: handleFetchTaxes,
-  });
+function TaxDropdown({
+  taxes,
+  productID,
+}: {
+  taxes: TaxQuery;
+  productID: string;
+}) {
+  const addTax = useTotalStore((state) => state.addTax);
+  const removeTax = useTotalStore((state) => state.removeTax);
 
+  const handleAddTax = (value: string) => {
+    addTax(value, productID);
+  };
+
+  const handleRemoveTax = (value: string) => {
+    removeTax(value, productID);
+  };
 
   return (
     <div>
       <Select
         mode="multiple"
         placeholder={
-          isError
+          taxes.taxesAreError
             ? "Failed to fetch taxes"
-            : isLoading
+            : taxes.taxesAreLoading
             ? "Loading taxes..."
             : "Select taxes"
         }
         defaultValue={[]}
         style={{ width: "100%" }}
-        loading={isLoading}
-        disabled={isError ? true : false}
+        loading={taxes.taxesAreLoading}
+        disabled={taxes.taxesAreError ? true : false}
         options={
-          isLoading
+          taxes.taxesAreLoading
             ? loadingOptions
-            : data && data.length > 0
-            ? (data as TaxOption[])
+            : taxes.taxesData && taxes.taxesData.length > 0
+            ? (taxes.taxesData as TaxOption[])
             : noTaxesOptions
         }
+        onSelect={handleAddTax}
+        onDeselect={handleRemoveTax}
       />
     </div>
   );

@@ -1,8 +1,10 @@
 import { Select } from "antd";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { handleFetchDiscounts } from "@/app/clientAPI/discountAPI";
-import { DiscountOption } from "@/app/interface/DiscountInterface";
+import {
+  DiscountOption,
+  DiscountQuery,
+} from "@/app/interface/DiscountInterface";
+import { useTotalStore } from "@/app/store/store";
 
 const loadingOptions: DiscountOption[] = [
   {
@@ -18,34 +20,48 @@ const noDiscountsOptions: DiscountOption[] = [
   },
 ];
 
-function DiscountDropdown() {
-  const { data, error, isError, isLoading } = useQuery({
-    queryKey: ["discounts"],
-    queryFn: handleFetchDiscounts,
-  });
+function DiscountDropdown({
+  discounts,
+  productID,
+}: {
+  discounts: DiscountQuery;
+  productID: string;
+}) {
+  const addDiscount = useTotalStore((state) => state.addDiscount);
+  const removeDiscount = useTotalStore((state) => state.removeDiscount);
+
+  const handleAddDiscount = (value: string) => {
+    addDiscount(value, productID);
+  };
+
+  const handleRemoveDiscount = (value: string) => {
+    removeDiscount(value, productID);
+  };
 
   return (
     <div>
       <Select
         mode="multiple"
         placeholder={
-          isError
+          discounts.discountsAreError
             ? "Failed to fetch discounts"
-            : isLoading
+            : discounts.discountsAreLoading
             ? "Loading discounts..."
             : "Select discounts"
         }
         defaultValue={[]}
         style={{ width: "100%" }}
-        loading={isLoading}
-        disabled={isError ? true : false}
+        loading={discounts.discountsAreLoading}
+        disabled={discounts.discountsAreError ? true : false}
         options={
-          isLoading
+          discounts.discountsAreLoading
             ? loadingOptions
-            : data && data.length > 0
-            ? (data as DiscountOption[])
+            : discounts.discountsData && discounts.discountsData.length > 0
+            ? (discounts.discountsData as DiscountOption[])
             : noDiscountsOptions
         }
+        onSelect={handleAddDiscount}
+        onDeselect={handleRemoveDiscount}
       />
     </div>
   );

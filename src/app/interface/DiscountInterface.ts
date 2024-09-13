@@ -9,3 +9,10 @@ export interface DiscountOption {
   value: string;
   label: string;
 }
+
+export interface DiscountQuery {
+  discountsData: DiscountOption[] | undefined;
+  discountsError: unknown;
+  discountsAreError: boolean;
+  discountsAreLoading: boolean;
+}
