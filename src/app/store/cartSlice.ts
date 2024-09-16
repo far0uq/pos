@@ -1,13 +1,12 @@
-import { create, StateCreator } from "zustand";
+import {  StateCreator } from "zustand";
 import { Product } from "../interface/ProductInterface";
 import { TaxID, ProductID, DiscountID } from "../interface/CartInterface";
 
 interface CartState {
   cartProducts: Product[];
-  quantityCounts: Map<string, number>;
+  quantityCounts: Map<ProductID, number>;
   cartLength: number;
-  taxes: Map<TaxID, number>;
-  itemTaxRecord: Map<ProductID, TaxID[]>;
+  taxes: Set<TaxID>;
   discounts: Map<DiscountID, number>;
   itemDiscountRecord: Map<ProductID, DiscountID[]>;
 }
@@ -15,16 +14,16 @@ interface CartState {
 interface CartActions {
   increaseProductQuantity: (
     productID: string,
-    oldQuantityCounts: Map<string, number>
-  ) => Map<string, number>;
+    oldQuantityCounts: Map<ProductID, number>
+  ) => Map<ProductID, number>;
   decreaseProductQuantity: (
     productID: string,
-    oldQuantityCounts: Map<string, number>
-  ) => Map<string, number>;
+    oldQuantityCounts: Map<ProductID, number>
+  ) => Map<ProductID, number>;
   addProduct: (product: Product) => void;
   removeProduct: (product: Product) => void;
-  addTax: (taxID: string, productID: string) => void;
-  removeTax: (taxID: string, productID: string) => void;
+  addTax: (taxID: TaxID) => void;
+  removeTax: (taxID: TaxID) => void;
   addDiscount: (discountID: string, productID: string) => void;
   removeDiscount: (discountID: string, productID: string) => void;
   clearCart: () => void;
@@ -35,15 +34,15 @@ export interface CartSlice extends CartState, CartActions {}
 export const createCartStore: StateCreator<CartSlice> = (set, get) => ({
   cartProducts: [],
   cartLength: 0,
-  quantityCounts: new Map<string, number>(),
-  taxes: new Map<TaxID, number>(),
+  quantityCounts: new Map<ProductID, number>(),
+  taxes: new Set(),
   itemTaxRecord: new Map<ProductID, TaxID[]>(),
   discounts: new Map<DiscountID, number>(),
   itemDiscountRecord: new Map<ProductID, DiscountID[]>(),
 
   increaseProductQuantity: (
     productID: string,
-    oldQuantityCounts: Map<string, number>
+    oldQuantityCounts: Map<ProductID, number>
   ) => {
     const updatedQuantity = new Map([...oldQuantityCounts]);
     if (updatedQuantity.has(productID)) {
@@ -58,7 +57,7 @@ export const createCartStore: StateCreator<CartSlice> = (set, get) => ({
 
   decreaseProductQuantity: (
     productID: string,
-    oldQuantityCounts: Map<string, number>
+    oldQuantityCounts: Map<ProductID, number>
   ) => {
     const updatedQuantity = new Map([...oldQuantityCounts]);
     const currentQuantity = updatedQuantity.get(productID) as number;
@@ -117,46 +116,32 @@ export const createCartStore: StateCreator<CartSlice> = (set, get) => ({
     });
   },
 
-  addTax(taxID: string, productID: string) {
+  addTax(taxID: string) {
     set((state) => {
-      const thisTaxExists = state.taxes.has(productID);
-      const updatedTaxes = new Map([...state.taxes]);
-      if (!thisTaxExists) {
-        updatedTaxes.set(taxID, 1);
-      } else {
-        const currentTax = updatedTaxes.get(taxID) as number;
-        updatedTaxes.set(taxID, currentTax + 1);
+      if (!state.taxes.has(taxID)) {
+        const updatedTaxes = new Set(state.taxes);
+        updatedTaxes.add(taxID);
+        return {
+          taxes: updatedTaxes,
+        };
       }
-
-      const updatedTaxRecord = new Map([...state.itemTaxRecord]);
-      const oldTaxIDs = updatedTaxRecord.get(productID) || [];
-      updatedTaxRecord.set(productID, [...oldTaxIDs, taxID]);
-
       return {
-        taxes: updatedTaxes,
-        itemTaxRecord: updatedTaxRecord,
+        taxes: state.taxes,
       };
     });
   },
 
-  removeTax(taxID: string, productID: string) {
+  removeTax(taxID: string) {
     set((state) => {
-      const updatedTaxes = new Map([...state.taxes]);
-      const currentTax = updatedTaxes.get(taxID) as number;
-      if (currentTax > 1) {
-        updatedTaxes.set(taxID, currentTax - 1);
-      } else {
+      if (state.taxes.has(taxID)) {
+        const updatedTaxes = new Set(state.taxes);
         updatedTaxes.delete(taxID);
+        return {
+          taxes: updatedTaxes,
+        };
       }
-
-      const updatedTaxRecord = new Map([...state.itemTaxRecord]);
-      const oldTaxIDs = updatedTaxRecord.get(productID) || [];
-      const newTaxIDs = oldTaxIDs.filter((id) => id !== taxID);
-      updatedTaxRecord.set(productID, newTaxIDs);
-
       return {
-        taxes: updatedTaxes,
-        itemTaxRecord: updatedTaxRecord,
+        taxes: state.taxes,
       };
     });
   },

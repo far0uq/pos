@@ -16,22 +16,16 @@ const noTaxesOptions: TaxOption[] = [
   },
 ];
 
-function TaxDropdown({
-  taxes,
-  productID,
-}: {
-  taxes: TaxQuery;
-  productID: string;
-}) {
+function TaxDropdown({ taxes }: { taxes: TaxQuery }) {
   const addTax = useTotalStore((state) => state.addTax);
   const removeTax = useTotalStore((state) => state.removeTax);
 
   const handleAddTax = (value: string) => {
-    addTax(value, productID);
+    addTax(value);
   };
 
   const handleRemoveTax = (value: string) => {
-    removeTax(value, productID);
+    removeTax(value);
   };
 
   return (

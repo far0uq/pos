@@ -3,10 +3,9 @@ import { Product } from "@/app/interface/ProductInterface";
 import { Card, Flex, Image, theme } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useTotalStore } from "@/app/store/store";
-import TaxDropdown from "./TaxDropdown";
 import DiscountDropdown from "./DiscountDropdown";
-import { TaxQuery } from "@/app/interface/TaxInterface";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
+import { LineItemResponse } from "@/app/interface/OrderInterface";
 
 const { Meta } = Card;
 const { useToken } = theme;
@@ -14,13 +13,13 @@ const { useToken } = theme;
 function CartItem({
   item,
   itemQuantity,
-  taxes,
   discounts,
+  individualCost,
 }: {
   item: Product;
   itemQuantity: number;
-  taxes: TaxQuery;
   discounts: DiscountQuery;
+  individualCost: LineItemResponse;
 }) {
   const { token } = useToken();
   const addProduct = useTotalStore((state) => state.addProduct);
@@ -36,26 +35,37 @@ function CartItem({
         </p>,
       ]}
     >
-      <Flex justify="flex-start" gap="large" align="center">
-        <Image
-          width={60}
-          height={100}
-          src={item.image}
-          preview={false}
-          alt={item.name}
-          style={{ borderRadius: token.borderRadius, objectFit: "cover" }}
-        />
+      <Flex vertical gap="large">
+        <Flex justify="flex-start" gap="large" align="center">
+          <Image
+            width={60}
+            height={100}
+            src={item.image}
+            preview={false}
+            alt={item.name}
+            style={{ borderRadius: token.borderRadius, objectFit: "cover" }}
+          />
 
-        <Flex vertical>
-          <Meta title={item.name} />
-          <p style={{ fontWeight: "bolder", color: "gray" }}>
-            x {itemQuantity}
-          </p>
+          <Flex vertical>
+            <Meta title={item.name} />
+            <p style={{ fontWeight: "bolder", color: "gray" }}>
+              x {itemQuantity}
+            </p>
+            {individualCost && individualCost.totalDiscountMoney.amount && (
+              <p style={{ fontWeight: "bolder", color: "gray" }}>
+                Data: x {individualCost.totalDiscountMoney.amount}
+              </p>
+            )}
+            {individualCost && individualCost.totalTaxMoney.amount && (
+              <p style={{ fontWeight: "bolder", color: "gray" }}>
+                Tax: {individualCost.totalMoney.amount}
+              </p>
+            )}
+          </Flex>
         </Flex>
-      </Flex>
 
-      <DiscountDropdown discounts={discounts} productID={item.id} />
-      <TaxDropdown taxes={taxes} productID={item.id} />
+        <DiscountDropdown discounts={discounts} productID={item.id} />
+      </Flex>
     </Card>
   );
 }

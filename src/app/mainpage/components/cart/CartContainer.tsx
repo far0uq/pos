@@ -1,21 +1,28 @@
 "use client";
 import CartItem from "./CartItem";
 import { Card, Flex, Empty, Button } from "antd";
-import Meta from "antd/es/card/Meta";
 import React from "react";
 import { useTotalStore } from "@/app/store/store";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { handleFetchDiscounts } from "@/app/clientAPI/discountAPI";
 import { handleFetchTaxes } from "@/app/clientAPI/taxAPI";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
 import { TaxQuery } from "@/app/interface/TaxInterface";
+import { calculateOrder } from "../../../clientAPI/orderAPI";
+import TaxDropdown from "./TaxDropdown";
+import {
+  OrderState,
+  OrderResponse,
+  LineItemResponse,
+} from "@/app/interface/OrderInterface";
+import TotalPaymentInfo from "./TotalPaymentInfo";
+import { TotalResponse } from "@/app/interface/OrderInterface";
 
 function CartContainer() {
   const products = useTotalStore((state) => state.cartProducts);
-  const quantities = useTotalStore((state) => state.quantityCounts);
+  const quantityCounts = useTotalStore((state) => state.quantityCounts);
   const taxes = useTotalStore((state) => state.taxes);
   const discounts = useTotalStore((state) => state.discounts);
-  const itemTaxRecord = useTotalStore((state) => state.itemTaxRecord);
   const itemDiscountRecord = useTotalStore((state) => state.itemDiscountRecord);
 
   const {
@@ -53,7 +60,27 @@ function CartContainer() {
   };
 
   const handleCalculateOrder = () => {
-    // Generating the Order object and passing it to the /calculate-order api
+    const orderInfo: OrderState = {
+      taxes,
+      discounts,
+      itemDiscountRecord,
+      quantityCounts,
+    };
+    calculateOrder(orderInfo);
+  };
+
+  const { data, error, isLoading }: UseQueryResult<TotalResponse> = useQuery({
+    queryKey: ["order"],
+    queryFn: handleCalculateOrder,
+  });
+
+  const getProductLineItem = (productID: string) => {
+    if (data) {
+      const foundData = data.lineItemResponse.find(
+        (lineItem) => lineItem.catalogObjectId === productID
+      );
+      return foundData;
+    }
   };
 
   return (
@@ -64,17 +91,24 @@ function CartContainer() {
             <CartItem
               key={product.id}
               item={product}
-              itemQuantity={quantities.get(product.id) ?? 0}
-              taxes={taxQuery}
+              itemQuantity={quantityCounts.get(product.id) ?? 0}
               discounts={discountQuery}
+              individualCost={
+                getProductLineItem(product.id) as LineItemResponse
+              }
             />
           ))}
 
           <Card>
-            <Button onClick={handleCalculateOrder}>Calculate Order</Button>
-            <Flex justify="space-between">
-              <Meta title="Total" />
-              <p style={{ fontWeight: "bolder" }}>$ 10,620</p>
+            <Flex gap="large" vertical>
+              <Button onClick={handleCalculateOrder} style={{ width: "100%" }}>
+                Calculate Order
+              </Button>
+              <TaxDropdown taxes={taxQuery} />
+
+              {error && <p>Error calculating order</p>}
+              {isLoading && <p>Calculating order...</p>}
+              {data ? <TotalPaymentInfo totalAll={data.orderResponse} /> : null}
             </Flex>
           </Card>
         </Flex>
