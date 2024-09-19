@@ -3,7 +3,7 @@ import CartItem from "./CartItem";
 import { Card, Flex, Empty, Button } from "antd";
 import React from "react";
 import { useTotalStore } from "@/app/store/store";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { handleFetchDiscounts } from "@/app/clientAPI/discountAPI";
 import { handleFetchTaxes } from "@/app/clientAPI/taxAPI";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
@@ -12,11 +12,10 @@ import { calculateOrder } from "../../../clientAPI/orderAPI";
 import TaxDropdown from "./TaxDropdown";
 import {
   OrderState,
-  OrderResponse,
   LineItemResponse,
+  LineItemResponseCleaned,
 } from "@/app/interface/OrderInterface";
 import TotalPaymentInfo from "./TotalPaymentInfo";
-import { TotalResponse } from "@/app/interface/OrderInterface";
 
 function CartContainer() {
   const products = useTotalStore((state) => state.cartProducts);
@@ -66,49 +65,57 @@ function CartContainer() {
       itemDiscountRecord,
       quantityCounts,
     };
-    calculateOrder(orderInfo);
+    return calculateOrder(orderInfo);
   };
 
-  const { data, error, isLoading }: UseQueryResult<TotalResponse> = useQuery({
-    queryKey: ["order"],
-    queryFn: handleCalculateOrder,
+  const mutation = useMutation({
+    mutationFn: () => handleCalculateOrder(),
   });
 
   const getProductLineItem = (productID: string) => {
-    if (data) {
-      const foundData = data.lineItemResponse.find(
-        (lineItem) => lineItem.catalogObjectId === productID
+    if (mutation.data) {
+      const foundData = mutation.data.lineItemDetails.find(
+        (lineItem: LineItemResponse) => lineItem.uid === productID
       );
       return foundData;
     }
   };
 
+  console.log("CART CONTAINER");
   return (
     <div>
       {products.length > 0 ? (
         <Flex vertical gap="large">
-          {products.map((product) => (
-            <CartItem
-              key={product.id}
-              item={product}
-              itemQuantity={quantityCounts.get(product.id) ?? 0}
-              discounts={discountQuery}
-              individualCost={
-                getProductLineItem(product.id) as LineItemResponse
-              }
-            />
-          ))}
+          {products.map((product) => {
+            const productMoneyDetails = getProductLineItem(product.id);
+            console.log(productMoneyDetails);
+
+            return (
+              <CartItem
+                key={product.id}
+                item={product}
+                itemQuantity={quantityCounts.get(product.id) ?? 0}
+                discounts={discountQuery}
+                individualCost={productMoneyDetails as LineItemResponseCleaned}
+              />
+            );
+          })}
 
           <Card>
             <Flex gap="large" vertical>
-              <Button onClick={handleCalculateOrder} style={{ width: "100%" }}>
+              <Button
+                onClick={() => mutation.mutate()}
+                style={{ width: "100%" }}
+              >
                 Calculate Order
               </Button>
               <TaxDropdown taxes={taxQuery} />
 
-              {error && <p>Error calculating order</p>}
-              {isLoading && <p>Calculating order...</p>}
-              {data ? <TotalPaymentInfo totalAll={data.orderResponse} /> : null}
+              {mutation.isError && <p>Error calculating order</p>}
+              {mutation.isPending && <p>Calculating order...</p>}
+              {mutation.data ? (
+                <TotalPaymentInfo totalAll={mutation.data.orderResponse} />
+              ) : null}
             </Flex>
           </Card>
         </Flex>

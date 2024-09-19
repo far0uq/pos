@@ -36,10 +36,10 @@ const getOrderObject = (
     const lineItemDiscounts = itemDiscountRecord.get(lineItemID) ?? [];
 
     return {
-      quantity: lineItemQuantity,
+      quantity: lineItemQuantity.toString(),
       catalogObjectId: lineItemID,
       itemType: "ITEM",
-      appliedTaxes: "",
+      appliedTaxes: [],
       appliedDiscounts: lineItemDiscounts.map((discount) => {
         return {
           discountUid: discount,
@@ -50,10 +50,12 @@ const getOrderObject = (
 
   console.log(process.env.NEXT_PUBLIC_LOCATION_ID);
   return {
-    locationId: process.env.NEXT_PUBLIC_LOCATION_ID,
-    lineItems: refinedLineItems,
-    taxes: refinedTaxes,
-    discounts: refinedDiscounts,
+    order: {
+      locationId: process.env.NEXT_PUBLIC_LOCATION_ID,
+      lineItems: refinedLineItems,
+      taxes: refinedTaxes,
+      discounts: refinedDiscounts,
+    },
   };
 };
 
@@ -64,9 +66,7 @@ export const calculateOrder = async (orderInfo: OrderState) => {
     orderInfo.itemDiscountRecord,
     orderInfo.quantityCounts
   );
-
-  console.log(order);
-
+  
   try {
     const resp = await fetch("/api/cartAPI", {
       method: "POST",
@@ -79,6 +79,7 @@ export const calculateOrder = async (orderInfo: OrderState) => {
       console.error("Error calculating order");
     }
     const { data } = await resp.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.error(error);

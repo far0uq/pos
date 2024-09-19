@@ -36,20 +36,38 @@ export interface AppliedTax {
 }
 
 export interface OrderResponse {
-  totalTaxAmount: string;
-  totalDiscountAmount: string;
-  totalAmount: string;
+  totalTaxMoney: number;
+  totalDiscountMoney: number;
+  totalMoney: number;
+}
+
+export interface LineItemResponseCleaned {
+  uid: string;
+  totalTaxMoney: number;
+  totalMoney: number;
+  totalDiscountMoney: number;
 }
 
 export interface LineItemResponse {
+  uid: string;
+  name: string;
+  quantity: string;
   catalogObjectId: string;
+  catalogVersion: number;
+  variationName: string;
+  itemType: string;
+  basePriceMoney: Amount;
+  variationTotalPriceMoney: Amount;
+  grossSalesMoney: Amount;
   totalTaxMoney: Amount;
   totalDiscountMoney: Amount;
   totalMoney: Amount;
+  totalServiceChargeMoney: Amount;
 }
 
 export interface Amount {
-  amount: string;
+  amount: number;
+  currency: string;
 }
 
 export interface OrderState {

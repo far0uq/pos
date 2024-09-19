@@ -5,7 +5,7 @@ import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useTotalStore } from "@/app/store/store";
 import DiscountDropdown from "./DiscountDropdown";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
-import { LineItemResponse } from "@/app/interface/OrderInterface";
+import { LineItemResponseCleaned } from "@/app/interface/OrderInterface";
 
 const { Meta } = Card;
 const { useToken } = theme;
@@ -19,19 +19,20 @@ function CartItem({
   item: Product;
   itemQuantity: number;
   discounts: DiscountQuery;
-  individualCost: LineItemResponse;
+  individualCost: LineItemResponseCleaned;
 }) {
   const { token } = useToken();
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
 
+  console.log("individualCost", individualCost);
   return (
     <Card
       actions={[
         <MinusCircleOutlined key="minus" onClick={() => removeProduct(item)} />,
         <PlusCircleOutlined key="add" onClick={() => addProduct(item)} />,
         <p style={{ color: "black" }} key="price">
-          {item.price}
+          $ {item.price * itemQuantity}
         </p>,
       ]}
     >
@@ -51,14 +52,14 @@ function CartItem({
             <p style={{ fontWeight: "bolder", color: "gray" }}>
               x {itemQuantity}
             </p>
-            {individualCost && individualCost.totalDiscountMoney.amount && (
+            {individualCost && (
               <p style={{ fontWeight: "bolder", color: "gray" }}>
-                Data: x {individualCost.totalDiscountMoney.amount}
+                Discount: $ {individualCost.totalDiscountMoney}
               </p>
             )}
-            {individualCost && individualCost.totalTaxMoney.amount && (
+            {individualCost && (
               <p style={{ fontWeight: "bolder", color: "gray" }}>
-                Tax: {individualCost.totalMoney.amount}
+                Tax: $ {individualCost.totalTaxMoney}
               </p>
             )}
           </Flex>

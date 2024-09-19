@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import {
   LineItemResponse,
+  LineItemResponseCleaned,
   OrderResponse,
 } from "@/app/interface/OrderInterface";
 
 export async function POST(req: Request) {
   try {
     const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
-    const { order } = await req.json();
-    console.log(order);
+    const order = await req.json();
+
+    console.log("I AM HERE!");
 
     const response = await fetch("http://localhost:5000/api/calculate-order", {
       method: "POST",
@@ -24,21 +26,21 @@ export async function POST(req: Request) {
       throw new Error("Error calculating the order, check API");
     }
 
-    const lineItemDetails = order.lineItems.map(
+    const lineItemDetails: LineItemResponseCleaned[] = result.lineItems.map(
       (lineItem: LineItemResponse) => {
         return {
           uid: lineItem.catalogObjectId,
-          totalTaxMoney: lineItem.totalTaxMoney.amount,
-          totalDiscountMoney: lineItem.totalDiscountMoney.amount,
-          totalMoney: lineItem.totalMoney.amount,
+          totalTaxMoney: lineItem.totalTaxMoney?.amount ?? 0,
+          totalMoney: lineItem.totalMoney?.amount ?? 0,
+          totalDiscountMoney: lineItem.totalDiscountMoney?.amount ?? 0,
         };
       }
     );
 
     const orderResponse: OrderResponse = {
-      totalTaxAmount: result.totalTaxAmount.amount,
-      totalDiscountAmount: result.totalDiscountAmount.amount,
-      totalAmount: result.totalAmount.amount,
+      totalTaxMoney: result.totalTaxMoney?.amount ?? 0,
+      totalDiscountMoney: result.totalDiscountMoney?.amount ?? 0,
+      totalMoney: result.totalMoney?.amount,
     };
 
     return NextResponse.json(
@@ -46,6 +48,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error }, { status: 500 });
   }
 }

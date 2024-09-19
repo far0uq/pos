@@ -11,6 +11,7 @@ export interface CatalogProductAPI {
   catalogObjectId: string;
   name: string;
   variations: {
+    variationId: string;
     price: {
       amount: number;
     };
