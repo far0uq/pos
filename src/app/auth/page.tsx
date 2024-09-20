@@ -26,11 +26,9 @@ function AuthForm() {
   const router = useRouter();
 
   const getParamAndCall = useCallback(async () => {
-    console.log("ENTERED CALLBACK");
     if (params.get("code")) {
       let authCode;
       authCode = params.get("code") as string;
-      console.log(authCode);
       const resp = await handleGetAndSetToken(authCode);
       if (resp.status === 200) {
         console.log("Success");

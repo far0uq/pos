@@ -4,7 +4,6 @@ import { getSession } from "./utils/sessionHelper";
 export async function POST(req: Request) {
   try {
     const { authenticationCode } = await req.json();
-    console.log("AUTHCODE RECIEVED" + authenticationCode);
 
     if (authenticationCode) {
       const url = `http://localhost:5000/api/access-token?code=${authenticationCode}`;

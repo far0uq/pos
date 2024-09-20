@@ -10,8 +10,6 @@ export async function POST(req: Request) {
     const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
     const order = await req.json();
 
-    console.log("I AM HERE!");
-
     const response = await fetch("http://localhost:5000/api/calculate-order", {
       method: "POST",
       headers: {

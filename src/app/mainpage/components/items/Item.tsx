@@ -22,10 +22,8 @@ function Item({ item }: { item: Product }) {
   const toggleQuantity = (type: string) => {
     if (type === "add") {
       addProduct(item);
-      // Fetch Quantity Here
     } else if (type === "sub") {
       removeProduct(item);
-      // Fetch Quantity Here
     }
   };
 
