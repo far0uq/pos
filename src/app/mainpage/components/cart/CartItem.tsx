@@ -25,7 +25,6 @@ function CartItem({
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
 
-  console.log("individualCost", individualCost);
   return (
     <Card
       actions={[

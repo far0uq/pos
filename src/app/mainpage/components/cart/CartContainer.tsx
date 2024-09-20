@@ -58,21 +58,17 @@ function CartContainer() {
     taxesAreLoading,
   };
 
-  const handleCalculateOrder = () => {
-    const orderInfo: OrderState = {
-      taxes,
-      discounts,
-      itemDiscountRecord,
-      quantityCounts,
-    };
-    return calculateOrder(orderInfo);
-  };
-
   const mutation = useMutation({
-    mutationFn: () => handleCalculateOrder(),
+    mutationFn: () =>
+      calculateOrder({
+        taxes,
+        discounts,
+        itemDiscountRecord,
+        quantityCounts,
+      }),
   });
 
-  const getProductLineItem = (productID: string) => {
+  const getProductMoneyDetails = (productID: string) => {
     if (mutation.data) {
       const foundData = mutation.data.lineItemDetails.find(
         (lineItem: LineItemResponse) => lineItem.uid === productID
@@ -81,14 +77,12 @@ function CartContainer() {
     }
   };
 
-  console.log("CART CONTAINER");
   return (
     <div>
       {products.length > 0 ? (
         <Flex vertical gap="large">
           {products.map((product) => {
-            const productMoneyDetails = getProductLineItem(product.id);
-            console.log(productMoneyDetails);
+            const productMoneyDetails = getProductMoneyDetails(product.id);
 
             return (
               <CartItem
