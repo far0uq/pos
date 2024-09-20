@@ -29,7 +29,7 @@ function ItemContainer({
   const handleCallProductAPI = async ({ pageParam }: { pageParam: string }) => {
     console.log(query);
     console.log(category);
-    if ((query && query !== "") || category !== "0") {
+    if ((query && query !== "") || (category && category !== "0")) {
       console.log("query or category");
       const resp = await fetch(`/api/productsAPI?pageParam=${pageParam}`, {
         method: "POST",
@@ -110,7 +110,7 @@ function ItemContainer({
           )
         )
       ) : (
-        <Empty />
+        <Empty style={{ width: "100%", marginTop: "22vh" }} />
       )}
       {isFetchingNextPage ? <ItemsLoading /> : null}
     </Flex>

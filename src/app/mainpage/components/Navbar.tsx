@@ -5,6 +5,7 @@ import { Button, Divider, Row, Col, Grid, Drawer } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
 import CartContainer from "./cart/CartContainer";
+import QueryClientWrapper from "@/app/wrapper/QueryClientWrapper";
 
 const { useBreakpoint } = Grid;
 
@@ -48,7 +49,9 @@ function Navbar() {
             closable={false}
             width={"500px"}
           >
-            <CartContainer />
+            <QueryClientWrapper>
+              <CartContainer />
+            </QueryClientWrapper>
           </Drawer>
         </Col>
         <Col

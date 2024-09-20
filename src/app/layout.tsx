@@ -20,6 +20,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
+      
       <body style={{ height: "100vh", fontSize: "2vw" }}>
         <AntdRegistry>{children}</AntdRegistry>
       </body>

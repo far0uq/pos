@@ -13,7 +13,7 @@ export const cleanProductObjects = (
     //     ) / 100
     //   : 0;
     cleanedObjects.push({
-      id: object.catalogObjectId,
+      id: object.variations[0]?.variationId ?? "",
       name: object.name,
       price: object.variations[0]?.price?.amount ?? 0,
       image:

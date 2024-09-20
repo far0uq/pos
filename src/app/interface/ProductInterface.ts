@@ -11,6 +11,7 @@ export interface CatalogProductAPI {
   catalogObjectId: string;
   name: string;
   variations: {
+    variationId: string;
     price: {
       amount: number;
     };
@@ -24,5 +25,6 @@ export interface ProductGroup {
 }
 
 export interface CartProduct extends Product {
-  quantity: number;
+  appliedTaxes: string[];
+  appliedDiscounts: string[];
 }
