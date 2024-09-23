@@ -9,8 +9,8 @@ const getFilteredProducts = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      query: query,
-      category: category,
+      query: query ?? "",
+      category: category ?? "0",
     }),
   });
   const response = await resp.json();
