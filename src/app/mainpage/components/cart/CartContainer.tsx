@@ -11,7 +11,6 @@ import { TaxQuery } from "@/app/interface/TaxInterface";
 import { calculateOrder } from "../../../clientAPI/orderAPI";
 import TaxDropdown from "./TaxDropdown";
 import {
-  OrderState,
   LineItemResponse,
   LineItemResponseCleaned,
 } from "@/app/interface/OrderInterface";

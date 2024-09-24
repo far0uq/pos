@@ -5,7 +5,6 @@ export const cleanProductObjects = (
 ): Product[] => {
   const cleanedObjects: Product[] = [];
   objects.forEach((object) => {
-    console.log(object);
     // const cleanedPrice = object.itemData?.variations?.[0]?.itemVariationData
     //   ?.priceMoney?.amount
     //   ? Number(

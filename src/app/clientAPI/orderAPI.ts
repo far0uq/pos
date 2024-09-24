@@ -78,7 +78,6 @@ export const calculateOrder = async (orderInfo: OrderState) => {
       console.error("Error calculating order");
     }
     const { data } = await resp.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error(error);

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, Image } from "antd";
+import React from "react";
+import { Card, Image, Grid } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
 import { useTotalStore } from "@/app/store/store";
 
 const { Meta } = Card;
+const { useBreakpoint } = Grid;
 
 enum Quantity {
   increase = "add",
@@ -14,6 +15,7 @@ enum Quantity {
 }
 
 function Item({ item }: { item: Product }) {
+  const screens = useBreakpoint();
   const quantityCount = useTotalStore((state) => state.quantityCounts);
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
@@ -25,7 +27,6 @@ function Item({ item }: { item: Product }) {
       removeProduct(item);
     }
   };
-
 
   return (
     <Card
@@ -42,13 +43,15 @@ function Item({ item }: { item: Product }) {
         />,
       ]}
       cover={
-          <Image
-            width={"100%"}
-            height={"auto"}
-            src={item.image}
-            alt="game"
-            preview={false}
-          />      }
+        <Image
+          width={"100%"}
+          height={screens.lg ? "150px" : "300px"}
+          src={item.image}
+          alt="book"
+          preview={false}
+          style={{ objectFit: "cover" }}
+        />
+      }
     >
       <Meta
         title={item.price ? item.price : "Free"}

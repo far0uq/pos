@@ -29,6 +29,7 @@ function Navbar() {
             width={230}
             src={WebsiteLogo}
             alt="Logo"
+            priority={true}
           />
         </Col>
         <Col

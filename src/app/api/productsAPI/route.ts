@@ -12,8 +12,6 @@ export async function GET(req: Request) {
     let cursor = searchParams.get("pageParam");
     let itemsFetchedBefore = searchParams.get("itemsFetchedBefore") ?? "";
 
-    console.log(itemsFetchedBefore);
-
     const url = `http://localhost:5000/api/search-catalog-items?cursor=${cursor}`;
 
     const resp = await fetch(url, {

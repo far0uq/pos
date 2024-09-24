@@ -16,11 +16,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701,900,901,1,2&display=swap"
           rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701,900,901,1,2&display=swap"
         />
       </head>
-      
+
       <body style={{ height: "100vh", fontSize: "2vw" }}>
         <AntdRegistry>{children}</AntdRegistry>
       </body>

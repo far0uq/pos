@@ -1,7 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-
 export async function handleObtainToken(authCode: string) {
   console.log("Handle Obtain Token" + authCode);
   try {
