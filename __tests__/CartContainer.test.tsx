@@ -4,6 +4,7 @@ import CartContainer from "@/app/mainpage/components/cart/CartContainer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTotalStore } from "@/app/store/store";
 import { useMutation } from "@tanstack/react-query";
+import { verifyCartTotal } from "@/app/api/productsAPI/utils/cartHelper";
 
 jest.mock("zustand");
 jest.mock("@tanstack/react-query", () => ({
@@ -217,5 +218,69 @@ describe("Cart Container", () => {
 
     const orderErrorElement = screen.getByText(orderErrorText);
     expect(orderErrorElement).toBeInTheDocument();
+  });
+
+  it("should handle price calculation for individual products correctly and display them", () => {
+    const product = {
+      id: "1",
+      name: "Dummy Item",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
+      price: 10,
+    };
+
+    (useMutation as jest.Mock).mockImplementationOnce(() => ({
+      data: {
+        orderResponse: {
+          totalMoney: 100,
+          totalDiscountMoney: 10,
+          totalTaxMoney: 5,
+        },
+        lineItemDetails: [
+          {
+            uid: "1",
+            totalMoney: 10,
+            totalDiscountMoney: 1,
+            totalTaxMoney: 0.5,
+          },
+        ],
+      },
+      error: null,
+      isError: false,
+      isPending: false,
+      isSucessful: true,
+      mutate: jest.fn(),
+    }));
+
+    let store = useTotalStore.getState();
+    store.addProduct(product);
+
+    const queryClient = new QueryClient();
+    let { container } = render(
+      <QueryClientProvider client={queryClient}>
+        <CartContainer />
+      </QueryClientProvider>
+    );
+
+    const itemMoney =
+      container.getElementsByClassName("cart-item-total")[0].innerHTML;
+    const itemDiscount =
+      container.getElementsByClassName("cart-item-discount")[0].innerHTML;
+    const itemTax =
+      container.getElementsByClassName("cart-item-tax")[0].innerHTML;
+    const itemQuantity =
+      container.getElementsByClassName("cart-item-quantity")[0].innerHTML;
+    const itemRawPrice = container.getElementsByClassName(
+      "cart-item-raw-price"
+    )[0].innerHTML;
+
+    const itemPriceValid = verifyCartTotal(
+      itemTax,
+      itemDiscount,
+      itemQuantity,
+      itemRawPrice,
+      itemMoney
+    );
+    expect(itemPriceValid).toEqual(true);
   });
 });

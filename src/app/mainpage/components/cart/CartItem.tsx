@@ -43,13 +43,15 @@ function CartItem({
           onClick={() => handleRemoveProduct(item)}
         />,
         <PlusCircleOutlined key="add" onClick={() => handleAddProduct(item)} />,
-        <p style={{ color: "black" }} key="price">
+        <p style={{ color: "black" }} key="price" className="cart-item-total">
           ${" "}
           {individualCost
-            ? item.price * itemQuantity +
-              individualCost.totalTaxMoney +
-              individualCost.totalDiscountMoney
-            : item.price * itemQuantity}
+            ? (
+                item.price * itemQuantity +
+                individualCost.totalTaxMoney +
+                individualCost.totalDiscountMoney
+              ).toLocaleString()
+            : (item.price * itemQuantity).toLocaleString()}
         </p>,
       ]}
     >
@@ -66,23 +68,44 @@ function CartItem({
 
           <Flex vertical>
             <Meta title={item.name} />
-            <p style={{ fontWeight: "bolder", color: "gray" }}>
+            <p
+              style={{ fontWeight: "bolder", color: "gray" }}
+              className="cart-item-quantity"
+            >
               x {itemQuantity}
             </p>
             {individualCost && (
-              <p style={{ fontWeight: "bolder", color: "gray" }}>
-                Discount: $ {individualCost.totalDiscountMoney}
+              <p
+                style={{ fontWeight: "bolder", color: "gray" }}
+                className="cart-item-discount"
+              >
+                Discount: $ {individualCost.totalDiscountMoney.toLocaleString()}
               </p>
             )}
             {individualCost && (
-              <p style={{ fontWeight: "bolder", color: "gray" }}>
-                Tax: $ {individualCost.totalTaxMoney}
+              <p
+                style={{ fontWeight: "bolder", color: "gray" }}
+                className="cart-item-tax"
+              >
+                Tax: $ {individualCost.totalTaxMoney.toLocaleString()}
+              </p>
+            )}
+            {individualCost && (
+              <p
+                style={{ fontWeight: "bolder", color: "gray" }}
+                className="cart-item-raw-price"
+              >
+                Raw Price: $ {(item.price * itemQuantity).toLocaleString()}
               </p>
             )}
           </Flex>
         </Flex>
 
-        <DiscountDropdown discounts={discounts} productID={item.id} mutate = {mutate}/>
+        <DiscountDropdown
+          discounts={discounts}
+          productID={item.id}
+          mutate={mutate}
+        />
       </Flex>
     </Card>
   );
