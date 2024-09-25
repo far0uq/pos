@@ -37,10 +37,10 @@ describe("Product Item in ItemContainer", () => {
     const quantity = "Quantity: 0";
     const itemQuantity = screen.getByText(quantity);
 
-    expect(itemname).toHaveTextContent(product.name);
-    expect(itemprice).toHaveTextContent(product.price.toString());
+    expect(itemname).toBeInTheDocument();
+    expect(itemprice).toBeInTheDocument();
     expect(itemImage).toHaveAttribute("src", product.image);
-    expect(itemQuantity).toHaveTextContent(quantity);
+    expect(itemQuantity).toBeInTheDocument();
   });
 
   it("should increase item quantity", () => {

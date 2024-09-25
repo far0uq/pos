@@ -20,7 +20,7 @@ function TotalPaymentInfo({ totalAll }: { totalAll: OrderResponse }) {
       </Flex>
       <Flex justify="space-between">
         <Meta title="Total" />
-        <p style={{ fontWeight: "bolder" }}>
+        <p style={{ fontWeight: "bolder" }} className="total-money">
           $ {totalAll.totalMoney.toLocaleString()}
         </p>
       </Flex>
