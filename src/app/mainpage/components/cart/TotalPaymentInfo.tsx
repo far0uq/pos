@@ -19,9 +19,20 @@ function TotalPaymentInfo({ totalAll }: { totalAll: OrderResponse }) {
         </p>
       </Flex>
       <Flex justify="space-between">
-        <Meta title="Total" />
+        <Meta title="Total without Tax + Discounts" />
         <p style={{ fontWeight: "bolder" }} className="total-money">
           $ {totalAll.totalMoney.toLocaleString()}
+        </p>
+      </Flex>
+      <Flex justify="space-between">
+        <Meta title="Total with Tax + Discounts" />
+        <p style={{ fontWeight: "bolder" }} className="total-money">
+          ${" "}
+          {(
+            totalAll.totalMoney +
+            totalAll.totalDiscountMoney +
+            totalAll.totalTaxMoney
+          ).toLocaleString()}
         </p>
       </Flex>
     </Flex>

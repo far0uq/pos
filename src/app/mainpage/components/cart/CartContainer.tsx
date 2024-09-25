@@ -90,6 +90,7 @@ function CartContainer() {
                 itemQuantity={quantityCounts.get(product.id) ?? 0}
                 discounts={discountQuery}
                 individualCost={productMoneyDetails as LineItemResponseCleaned}
+                mutate={mutation.mutate}
               />
             );
           })}
@@ -102,7 +103,7 @@ function CartContainer() {
               >
                 Calculate Order
               </Button>
-              <TaxDropdown taxes={taxQuery} />
+              <TaxDropdown taxes={taxQuery} mutate={mutation.mutate} />
 
               {mutation.isError && <p>Error calculating order</p>}
               {mutation.isPending && <p>Calculating order...</p>}

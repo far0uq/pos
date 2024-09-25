@@ -15,23 +15,41 @@ function CartItem({
   itemQuantity,
   discounts,
   individualCost,
+  mutate,
 }: {
   item: Product;
   itemQuantity: number;
   discounts: DiscountQuery;
   individualCost: LineItemResponseCleaned;
+  mutate: () => void;
 }) {
   const { token } = useToken();
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
+  const handleAddProduct = (item: Product) => {
+    addProduct(item);
+    mutate();
+  };
+  const handleRemoveProduct = (item: Product) => {
+    removeProduct(item);
+    mutate();
+  };
 
   return (
     <Card
       actions={[
-        <MinusCircleOutlined key="minus" onClick={() => removeProduct(item)} />,
-        <PlusCircleOutlined key="add" onClick={() => addProduct(item)} />,
+        <MinusCircleOutlined
+          key="minus"
+          onClick={() => handleRemoveProduct(item)}
+        />,
+        <PlusCircleOutlined key="add" onClick={() => handleAddProduct(item)} />,
         <p style={{ color: "black" }} key="price">
-          $ {item.price * itemQuantity}
+          ${" "}
+          {individualCost
+            ? item.price * itemQuantity +
+              individualCost.totalTaxMoney +
+              individualCost.totalDiscountMoney
+            : item.price * itemQuantity}
         </p>,
       ]}
     >
@@ -64,7 +82,7 @@ function CartItem({
           </Flex>
         </Flex>
 
-        <DiscountDropdown discounts={discounts} productID={item.id} />
+        <DiscountDropdown discounts={discounts} productID={item.id} mutate = {mutate}/>
       </Flex>
     </Card>
   );
