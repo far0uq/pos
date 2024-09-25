@@ -46,7 +46,7 @@ function Navbar() {
           <Drawer
             onClose={closeDrawer}
             open={open}
-            closable={false}
+            closable={screens.sm ? false : true}
             width={"500px"}
           >
             <QueryClientWrapper>

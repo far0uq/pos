@@ -4,7 +4,6 @@ import { getSession } from "./app/api/authTokenAPI/utils/sessionHelper";
 import * as jose from "jose";
 
 export async function middleware(req: NextRequest) {
-  console.log("Middleware entered");
   try {
     const session = await getSession();
 
@@ -14,11 +13,8 @@ export async function middleware(req: NextRequest) {
       throw new Error("Session token is missing.");
     }
     const token = session.token;
-    console.log("Token in middleware: " + token);
 
     const secret = process.env.NEXTAUTH_SECRET as string;
-
-    console.log("Secret: " + secret);
 
     const res = await jose.jwtVerify(token, new TextEncoder().encode(secret));
 

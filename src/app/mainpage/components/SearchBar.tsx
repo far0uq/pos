@@ -43,10 +43,8 @@ function SearchBar({
   }
 
   const handleSaveQuery = (values: SearchFormat) => {
-    console.log(values);
     if (values.query !== query) {
       setQuery(values.query);
-      console.log("Setting query");
     }
     if (values.category !== category) setCategory(values.category);
   };

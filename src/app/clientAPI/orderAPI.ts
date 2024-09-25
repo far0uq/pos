@@ -48,7 +48,6 @@ const getOrderObject = (
     };
   });
 
-  console.log(process.env.NEXT_PUBLIC_LOCATION_ID);
   return {
     order: {
       locationId: process.env.NEXT_PUBLIC_LOCATION_ID,
@@ -66,7 +65,7 @@ export const calculateOrder = async (orderInfo: OrderState) => {
     orderInfo.itemDiscountRecord,
     orderInfo.quantityCounts
   );
-  
+
   try {
     const resp = await fetch("/api/cartAPI", {
       method: "POST",

@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, Image, Grid } from "antd";
+import { Card, Image } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
 import { useTotalStore } from "@/app/store/store";
 
 const { Meta } = Card;
-const { useBreakpoint } = Grid;
 
 enum Quantity {
   increase = "add",
@@ -22,14 +21,11 @@ function Item({ item }: { item: Product }) {
   const toggleQuantity = (type: string) => {
     if (type === "add") {
       addProduct(item);
-      // Fetch Quantity Here
     } else if (type === "sub") {
       removeProduct(item);
-      // Fetch Quantity Here
     }
   };
 
-  const screens = useBreakpoint();
 
   return (
     <Card
@@ -46,16 +42,13 @@ function Item({ item }: { item: Product }) {
         />,
       ]}
       cover={
-        screens.lg ? (
           <Image
             width={"100%"}
             height={"auto"}
             src={item.image}
             alt="game"
             preview={false}
-          />
-        ) : null
-      }
+          />      }
     >
       <Meta
         title={item.price ? item.price : "Free"}

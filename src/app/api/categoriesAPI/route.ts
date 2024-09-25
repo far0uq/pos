@@ -12,10 +12,7 @@ export async function GET() {
       },
     });
     const { result } = await response.json();
-    console.log(result);
     const formattedCategories = formatCategories(result);
-
-    console.log("Formatted Categories: ", formattedCategories);
 
     return NextResponse.json({ data: formattedCategories }, { status: 200 });
   } catch (error) {
