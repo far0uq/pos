@@ -33,13 +33,12 @@ describe("Cart Container", () => {
       </QueryClientProvider>
     );
 
-    const cartBody = container.getElementsByClassName("ant-card")[0] ?? null;
+    const cartBody = container.getElementsByClassName("ant-card")[0];
 
-    const emptyCartElement =
-      container.getElementsByClassName("ant-empty")[0] ?? null;
+    const emptyCartElement = container.getElementsByClassName("ant-empty")[0];
 
     expect(emptyCartElement).toBeInTheDocument();
-    expect(cartBody).toBeNull();
+    expect(cartBody).toBeUndefined();
   });
 
   it("should handle appropriately when products are in the cart", () => {
@@ -60,12 +59,11 @@ describe("Cart Container", () => {
       </QueryClientProvider>
     );
 
-    const cartBody = container.getElementsByClassName("ant-card")[0] ?? null;
+    const cartBody = container.getElementsByClassName("ant-card")[0];
 
-    const emptyCartElement =
-      container.getElementsByClassName("ant-empty")[0] ?? null;
+    const emptyCartElement = container.getElementsByClassName("ant-empty")[0];
 
-    expect(emptyCartElement).toBeNull();
+    expect(emptyCartElement).toBeFalsy();
     expect(cartBody).toBeInTheDocument();
   });
 
@@ -88,8 +86,7 @@ describe("Cart Container", () => {
       </QueryClientProvider>
     );
 
-    const calculateOrderButton =
-      container.getElementsByClassName("ant-btn")[0] ?? null;
+    const calculateOrderButton = container.getElementsByClassName("ant-btn")[0];
 
     act(() => {
       fireEvent.click(calculateOrderButton);
@@ -139,15 +136,14 @@ describe("Cart Container", () => {
     const orderLoadingTest = "Calculating order...";
 
     const orderErrorElement =
-      container.getElementsByClassName(orderErrorText)[0] ?? null;
+      container.getElementsByClassName(orderErrorText)[0];
     const orderLoadingElement =
-      container.getElementsByClassName(orderLoadingTest)[0] ?? null;
-    const orderEmptyElement =
-      container.getElementsByClassName("ant-empty")[0] ?? null;
+      container.getElementsByClassName(orderLoadingTest)[0];
+    const orderEmptyElement = container.getElementsByClassName("ant-empty")[0];
 
-    expect(orderErrorElement).toBeNull();
-    expect(orderLoadingElement).toBeNull();
-    expect(orderEmptyElement).toBeNull();
+    expect(orderErrorElement).toBeUndefined();
+    expect(orderLoadingElement).toBeUndefined();
+    expect(orderEmptyElement).toBeUndefined();
     expect(totalMoneyPara).toBeInTheDocument();
   });
 
