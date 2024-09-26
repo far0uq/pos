@@ -3,24 +3,11 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import Item from "@/app/mainpage/components/items/Item";
 import { useTotalStore } from "@/app/store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "../__mocks__/matchMedia";
 
 jest.mock("zustand");
 
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(), // Deprecated
-    removeListener: jest.fn(), // Deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
-
-xdescribe("Product Item in ItemContainer", () => {
+describe("Product Item in ItemContainer", () => {
   it("should render the item", () => {
     const product = {
       id: "1",

@@ -1,7 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { calculateOrder } from "@/app/clientAPI/orderAPI";
-import { useTotalStore } from "@/app/store/store";
-import { useEffect } from "react";
 
 export const useCartMutation = (
   taxes: Set<string>,

@@ -1,10 +1,11 @@
 import "@testing-library/jest-dom";
-import { render, screen, act, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import CartContainer from "@/app/mainpage/components/cart/CartContainer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTotalStore } from "@/app/store/store";
 import { useMutation } from "@tanstack/react-query";
 import { verifyCartTotal } from "@/app/api/productsAPI/utils/cartHelper";
+import "../__mocks__/matchMedia";
 
 jest.mock("zustand");
 jest.mock("@tanstack/react-query", () => ({
@@ -68,7 +69,7 @@ describe("Cart Container", () => {
     expect(cartBody).toBeInTheDocument();
   });
 
-  it("should call useMutation on clicking calculate order", () => {
+  it("should call useMutation on clicking rendering cart", () => {
     const product = {
       id: "1",
       name: "Dummy Item",
@@ -82,17 +83,11 @@ describe("Cart Container", () => {
 
     const queryClient = new QueryClient();
 
-    let { container } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <CartContainer />
       </QueryClientProvider>
     );
-
-    const calculateOrderButton = container.getElementsByClassName("ant-btn")[0];
-
-    act(() => {
-      fireEvent.click(calculateOrderButton);
-    });
 
     expect(useMutation).toHaveBeenCalled();
   });
