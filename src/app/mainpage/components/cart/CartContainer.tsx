@@ -3,18 +3,16 @@ import CartItem from "./CartItem";
 import { Card, Flex, Empty, Button } from "antd";
 import React from "react";
 import { useTotalStore } from "@/app/store/store";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { handleFetchDiscounts } from "@/app/clientAPI/discountAPI";
-import { handleFetchTaxes } from "@/app/clientAPI/taxAPI";
+import { useMutation } from "@tanstack/react-query";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
 import { TaxQuery } from "@/app/interface/TaxInterface";
 import { calculateOrder } from "../../../clientAPI/orderAPI";
 import TaxDropdown from "./TaxDropdown";
-import {
-  LineItemResponse,
-  LineItemResponseCleaned,
-} from "@/app/interface/OrderInterface";
+import { LineItemResponseCleaned } from "@/app/interface/OrderInterface";
 import TotalPaymentInfo from "./TotalPaymentInfo";
+import { useFetchDiscounts } from "@/app/hooks/useFetchDiscounts";
+import { useFetchTaxes } from "@/app/hooks/useFetchTaxes";
+import { getProductMoneyDetails } from "@/app/clientAPI/productAPI";
 
 function CartContainer() {
   const products = useTotalStore((state) => state.cartProducts);
@@ -23,39 +21,8 @@ function CartContainer() {
   const discounts = useTotalStore((state) => state.discounts);
   const itemDiscountRecord = useTotalStore((state) => state.itemDiscountRecord);
 
-  const {
-    data: discountsData,
-    error: discountsError,
-    isError: discountsAreError,
-    isLoading: discountsAreLoading,
-  } = useQuery({
-    queryKey: ["discounts"],
-    queryFn: handleFetchDiscounts,
-  });
-
-  const {
-    data: taxesData,
-    error: taxesError,
-    isError: taxesAreError,
-    isLoading: taxesAreLoading,
-  } = useQuery({
-    queryKey: ["taxes"],
-    queryFn: handleFetchTaxes,
-  });
-
-  const discountQuery: DiscountQuery = {
-    discountsData,
-    discountsError,
-    discountsAreError,
-    discountsAreLoading,
-  };
-
-  const taxQuery: TaxQuery = {
-    taxesData,
-    taxesError,
-    taxesAreError,
-    taxesAreLoading,
-  };
+  const discountQuery: DiscountQuery = useFetchDiscounts();
+  const taxQuery: TaxQuery = useFetchTaxes();
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -67,21 +34,15 @@ function CartContainer() {
       }),
   });
 
-  const getProductMoneyDetails = (productID: string) => {
-    if (mutation.data) {
-      const foundData = mutation.data.lineItemDetails.find(
-        (lineItem: LineItemResponse) => lineItem.uid === productID
-      );
-      return foundData;
-    }
-  };
-
   return (
     <div>
       {products.length > 0 ? (
         <Flex vertical gap="large">
           {products.map((product) => {
-            const productMoneyDetails = getProductMoneyDetails(product.id);
+            const productMoneyDetails = getProductMoneyDetails(
+              product.id,
+              mutation.data
+            );
 
             return (
               <CartItem

@@ -48,6 +48,11 @@ export interface LineItemResponseCleaned {
   totalDiscountMoney: number;
 }
 
+export interface OrderTotalResponseObject {
+  orderResponse: OrderResponse;
+  lineItemDetails: LineItemResponseCleaned[];
+}
+
 export interface LineItemResponse {
   uid: string;
   name: string;
