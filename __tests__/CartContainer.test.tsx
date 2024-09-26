@@ -48,6 +48,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
     let store = useTotalStore.getState();
     store.addProduct(product);
@@ -74,6 +75,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
     let store = useTotalStore.getState();
     store.addProduct(product);
@@ -118,6 +120,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
 
     let store = useTotalStore.getState();
@@ -162,6 +165,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
 
     let store = useTotalStore.getState();
@@ -196,6 +200,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
 
     let store = useTotalStore.getState();
@@ -223,6 +228,7 @@ describe("Cart Container", () => {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjw-x2av0YFJfxJx6oN6lOQqC3TxftSOqtKA&s",
       price: 10,
+      priceExists: true,
     };
 
     (useMutation as jest.Mock).mockImplementationOnce(() => ({

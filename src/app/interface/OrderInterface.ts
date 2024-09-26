@@ -1,6 +1,9 @@
 import { DiscountID, ProductID, TaxID } from "./CartInterface";
 
 export interface Order {
+  order: OrderStructure;
+}
+export interface OrderStructure {
   locationId: string;
   lineItems: LineItem[];
   taxes: OrderTax[];

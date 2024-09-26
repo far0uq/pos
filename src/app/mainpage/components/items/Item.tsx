@@ -16,15 +16,17 @@ enum Quantity {
 
 function Item({ item }: { item: Product }) {
   const screens = useBreakpoint();
-  const quantityCount = useTotalStore((state) => state.quantityCounts);
+  const quantityCounts = useTotalStore((state) => state.quantityCounts);
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
 
   const toggleQuantity = (type: string) => {
-    if (type === "add") {
-      addProduct(item);
-    } else if (type === "sub") {
-      removeProduct(item);
+    if (item.priceExists) {
+      if (type === "add") {
+        addProduct(item);
+      } else if (type === "sub") {
+        removeProduct(item);
+      }
     }
   };
 
@@ -54,8 +56,8 @@ function Item({ item }: { item: Product }) {
       }
     >
       <Meta
-        title={item.price ? item.price : "Free"}
-        description={`Quantity: ${quantityCount.get(item.id) ?? 0}`}
+        title={item.price ? item.price : item.priceExists ? "Free" : "Variable"}
+        description={`Quantity: ${quantityCounts.get(item.id) ?? 0}`}
       />
     </Card>
   );

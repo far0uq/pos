@@ -3,7 +3,7 @@ import { OrderTotalResponseObject } from "@/app/interface/OrderInterface";
 
 export const getProductMoneyDetails = (
   productID: string,
-  mutationData: OrderTotalResponseObject
+  mutationData: OrderTotalResponseObject | undefined
 ) => {
   if (mutationData) {
     const foundData = mutationData.lineItemDetails.find(

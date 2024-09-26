@@ -23,7 +23,7 @@ export const verifyCartTotal = (
 
   const itemTotalPriceMatchesParts =
     itemTotalMoneyInt ===
-    itemDiscountInt + itemTaxInt + itemQuantityInt * itemRawPriceInt;
+    itemTaxInt - itemDiscountInt + itemQuantityInt * itemRawPriceInt;
 
   if (itemTotalPriceMatchesParts) {
     return true;

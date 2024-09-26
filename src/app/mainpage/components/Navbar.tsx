@@ -6,6 +6,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
 import CartContainer from "./cart/CartContainer";
 import QueryClientWrapper from "@/app/wrapper/QueryClientWrapper";
+import * as Sentry from "@sentry/react";
 
 const { useBreakpoint } = Grid;
 
@@ -16,7 +17,7 @@ function Navbar() {
   const closeDrawer = () => setOpen(false);
 
   return (
-    <>
+    <Sentry.ErrorBoundary fallback={<p>An error has occured in the Navbar</p>}>
       <Row
         style={{
           width: screens.sm ? "65%" : "90%",
@@ -72,7 +73,7 @@ function Navbar() {
         </Col>
       </Row>
       <Divider style={{ marginTop: "20px" }} />
-    </>
+    </Sentry.ErrorBoundary>
   );
 }
 

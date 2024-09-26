@@ -3,6 +3,7 @@ import {
   LineItemResponse,
   LineItemResponseCleaned,
   OrderResponse,
+  Order,
 } from "@/app/interface/OrderInterface";
 
 export async function POST(req: Request) {
@@ -21,7 +22,9 @@ export async function POST(req: Request) {
 
     const { result } = await response.json();
     if (response.status !== 200) {
-      throw new Error("Error calculating the order, check API");
+      throw new Error(
+        "Error calculating the order, check API. An Items price is variable."
+      );
     }
 
     const lineItemDetails: LineItemResponseCleaned[] = result.lineItems.map(

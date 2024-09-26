@@ -15,24 +15,24 @@ function CartItem({
   itemQuantity,
   discounts,
   individualCost,
-  mutate,
+  refreshCart,
 }: {
   item: Product;
   itemQuantity: number;
   discounts: DiscountQuery;
   individualCost: LineItemResponseCleaned;
-  mutate: () => void;
+  refreshCart: () => void;
 }) {
   const { token } = useToken();
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
   const handleAddProduct = (item: Product) => {
     addProduct(item);
-    mutate();
+    refreshCart();
   };
   const handleRemoveProduct = (item: Product) => {
     removeProduct(item);
-    mutate();
+    refreshCart();
   };
 
   return (
@@ -48,7 +48,7 @@ function CartItem({
           {individualCost
             ? (
                 item.price * itemQuantity +
-                individualCost.totalTaxMoney +
+                individualCost.totalTaxMoney -
                 individualCost.totalDiscountMoney
               ).toLocaleString()
             : (item.price * itemQuantity).toLocaleString()}
@@ -104,7 +104,7 @@ function CartItem({
         <DiscountDropdown
           discounts={discounts}
           productID={item.id}
-          mutate={mutate}
+          refreshCart={refreshCart}
         />
       </Flex>
     </Card>
