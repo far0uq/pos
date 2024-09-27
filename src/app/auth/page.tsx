@@ -13,7 +13,7 @@ function AuthForm() {
 
       const { url } = await resp.json();
 
-      window.open(url);
+      window.location.replace(url);
     } catch (error) {
       console.error("Error: ", error);
     }

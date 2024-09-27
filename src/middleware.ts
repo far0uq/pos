@@ -12,7 +12,6 @@ export async function middleware(req: NextRequest) {
     if (!token) {
       throw new Error("Could not retrieve token from Session.");
     }
-    console.log(token);
     const secret = process.env.NEXTAUTH_SECRET as string;
     const res = await jose.jwtVerify(token, new TextEncoder().encode(secret));
 
@@ -22,15 +21,23 @@ export async function middleware(req: NextRequest) {
       );
     }
 
-    console.log("token verified");
+    const pathname = new URL(req.url).pathname;
 
-    return NextResponse.next();
+    if (pathname === "/mainpage") {
+      return NextResponse.next(); // Do nothing, allow the page to load
+    }
+
+    return NextResponse.redirect(new URL("/mainpage", req.url));
   } catch (error) {
     console.log(error);
+    const pathname = new URL(req.url).pathname;
+    if (pathname === "/auth") {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(new URL("/auth", req.url));
   }
 }
 
 export const config = {
-  matcher: ["/mainpage"],
+  matcher: ["/mainpage", "/auth", "/"],
 };
