@@ -1,8 +1,12 @@
 "use client";
 
 import React from "react";
-import { Card, Image, Grid } from "antd";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Card, Image, Grid, Button } from "antd";
+import {
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
 import { useTotalStore } from "@/app/store/store";
 
@@ -34,16 +38,20 @@ function Item({ item }: { item: Product }) {
     <Card
       title={item.name}
       style={{ width: "100%" }}
-      actions={[
-        <MinusCircleOutlined
-          key="minus"
-          onClick={() => toggleQuantity(Quantity.decrease)}
-        />,
-        <PlusCircleOutlined
-          key="add"
-          onClick={() => toggleQuantity(Quantity.increase)}
-        />,
-      ]}
+      actions={
+        (quantityCounts.get(item.id) ?? 0) > 0
+          ? [
+              <MinusCircleOutlined
+                key="minus"
+                onClick={() => toggleQuantity(Quantity.decrease)}
+              />,
+              <PlusCircleOutlined
+                key="add"
+                onClick={() => toggleQuantity(Quantity.increase)}
+              />,
+            ]
+          : [<ShoppingCartOutlined key="shopping" />]
+      }
       cover={
         <Image
           width={"100%"}
@@ -59,6 +67,16 @@ function Item({ item }: { item: Product }) {
         title={item.price ? item.price : item.priceExists ? "Free" : "Variable"}
         description={`Quantity: ${quantityCounts.get(item.id) ?? 0}`}
       />
+      <Button
+        style={{
+          marginTop: "20px",
+          width: "100%",
+        }}
+        disabled={(quantityCounts.get(item.id) ?? 0) > 0}
+        onClick={() => toggleQuantity(Quantity.increase)}
+      >
+        Add to Cart
+      </Button>
     </Card>
   );
 }
