@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTotalStore } from "@/app/store/store";
 import { useMutation } from "@tanstack/react-query";
 import { verifyCartTotal } from "@/app/api/productsAPI/utils/cartHelper";
-import "../__mocks__/matchMedia";
+import "matchMedia";
 
 jest.mock("zustand");
 jest.mock("@tanstack/react-query", () => ({
