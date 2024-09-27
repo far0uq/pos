@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useEffect, useCallback } from "react";
-import { Form, Button, Flex } from "antd";
+import { Form, Button, Flex, theme } from "antd";
 import Item from "antd/lib/list/Item";
 import { useSearchParams, useRouter } from "next/navigation";
 import { handleGetAndSetToken } from "../clientAPI/authAPI";
 import lodash from "lodash";
+import { toast } from "react-hot-toast";
+
+const { useToken } = theme;
 
 function AuthForm() {
+  const { token } = useToken();
   const handleSubmit = useCallback(async () => {
     try {
       const resp = await fetch("/api/authTokenAPI", {
@@ -31,7 +35,18 @@ function AuthForm() {
       authCode = params.get("code") as string;
       const resp = await handleGetAndSetToken(authCode);
       if (resp.status === 200) {
-        console.log("Success");
+        toast.success("Login Successful.", {
+          style: {
+            border: `1px solid ${token.colorSuccess}`,
+            padding: "16px",
+            color: token.colorSuccess,
+            fontSize: "20px",
+          },
+          iconTheme: {
+            primary: token.colorSuccess,
+            secondary: "white",
+          },
+        });
         router.push("/mainpage");
       }
     }

@@ -1,7 +1,6 @@
 import { ConfigProvider } from "antd";
-import Navbar from "./mainpage/components/Navbar";
-import MainPage from "./mainpage/page";
 import { Toaster } from "react-hot-toast";
+import AuthForm from "@/app/auth/page";
 
 export default function Home() {
   return (
@@ -31,8 +30,7 @@ export default function Home() {
       }}
     >
       <Toaster position="top-right" />
-      <Navbar />
-      <MainPage />
+      <AuthForm />
     </ConfigProvider>
   );
 }

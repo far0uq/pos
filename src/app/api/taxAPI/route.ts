@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
+import { getTokenFromSession } from "@/app/api/authTokenAPI/utils/getTokenFromSession";
+import { tokenTypes } from "../../../../types/tokenTypes";
 
 export async function GET() {
   try {
-    const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
+    const token = await getTokenFromSession(tokenTypes.tokenTypeAPI);
+    if (!token) {
+      throw new Error("Could not retrieve token from Session.");
+    }
+
     const resp = await fetch("http://localhost:5000/api/get-tax?type=TAX", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: token,
       },
     });
     const { success, result } = await resp.json();

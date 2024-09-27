@@ -1,20 +1,46 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Button, Divider, Row, Col, Grid, Drawer } from "antd";
+import { Button, Divider, Row, Col, Grid, Drawer, theme } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
 import CartContainer from "./cart/CartContainer";
 import QueryClientWrapper from "@/app/wrapper/QueryClientWrapper";
 import * as Sentry from "@sentry/react";
+import { logoutSession } from "@/app/clientAPI/authAPI";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const { useBreakpoint } = Grid;
+const { useToken } = theme;
 
 function Navbar() {
   const screens = useBreakpoint();
   const [open, setOpen] = useState(false);
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
+
+  const { token } = useToken();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const resp = await logoutSession();
+    if (resp.status === 200) {
+      toast.success("Logged Out Successfully.", {
+        style: {
+          border: `1px solid ${token.colorSuccess}`,
+          padding: "16px",
+          color: token.colorSuccess,
+          fontSize: "20px",
+        },
+        iconTheme: {
+          primary: token.colorSuccess,
+          secondary: "white",
+        },
+      });
+      router.push("/auth");
+    }
+  };
 
   return (
     <Sentry.ErrorBoundary fallback={<p>An error has occured in the Navbar</p>}>
@@ -67,6 +93,7 @@ function Navbar() {
               width: "100%",
               fontWeight: "bolder",
             }}
+            onClick={handleLogout}
           >
             Logout
           </Button>

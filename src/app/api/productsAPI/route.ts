@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { cleanProductObjects } from "./utils/productHelper";
+import { getTokenFromSession } from "@/app/api/authTokenAPI/utils/getTokenFromSession";
+import { tokenTypes } from "../../../../types/tokenTypes";
 
 export async function POST(req: Request) {
   console.log("POST request received");
   try {
-    const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
+    const token = await getTokenFromSession(tokenTypes.tokenTypeAPI);
+    if (!token) {
+      throw new Error("Could not retrieve token from Session.");
+    }
 
     let { query, category } = await req.json();
     const { searchParams } = new URL(req.url);
@@ -19,11 +24,15 @@ export async function POST(req: Request) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: token,
       },
     });
 
-    const { result } = await resp.json();
+    const { success, result } = await resp.json();
+    if (!success) {
+      throw new Error("Failed to fetch products");
+    }
+
     cursor = result.cursor === "" ? null : result.cursor;
 
     const objects = result.items;

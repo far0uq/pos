@@ -39,3 +39,20 @@ export async function handleGetAndSetToken(authCode: string) {
     return { status: 500 };
   }
 }
+
+export async function logoutSession() {
+  try {
+    const resp = await fetch("/api/authTokenAPI", {
+      method: "DELETE",
+    });
+
+    if (resp.status === 200) {
+      return { status: resp.status };
+    } else {
+      throw new Error("Logout failed.");
+    }
+  } catch (error) {
+    console.error(error);
+    return { status: 500 };
+  }
+}
