@@ -38,7 +38,7 @@ function Navbar() {
           secondary: "white",
         },
       });
-      router.push("/auth");
+      router.push("/");
     }
   };
 
