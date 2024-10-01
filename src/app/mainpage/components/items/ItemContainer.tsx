@@ -3,12 +3,11 @@ import React, { useEffect } from "react";
 
 import { Empty, Flex, Grid } from "antd";
 import { useInView } from "react-intersection-observer";
-import { useInfiniteQuery } from "@tanstack/react-query";
 
 import Item from "./Item";
 import { Product, ProductGroup } from "@/app/interface/ProductInterface";
-import { handleFetchProducts } from "@/app/clientAPI/productAPI";
 import ItemsLoading from "../loading/ItemsLoading";
+import { useFetchProducts } from "@/app/hooks/useFetchProducts";
 
 const { useBreakpoint } = Grid;
 
@@ -22,18 +21,8 @@ function ItemContainer({
   const screens = useBreakpoint();
   const { ref, inView } = useInView();
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    isFetchingNextPage,
-    isPending,
-  } = useInfiniteQuery({
-    queryKey: ["products", query, category],
-    queryFn: handleFetchProducts,
-    initialPageParam: "",
-    getNextPageParam: (lastPage) => lastPage.cursor,
-  });
+  const { data, error, fetchNextPage, isFetchingNextPage, isPending } =
+    useFetchProducts(query, category);
 
   useEffect(() => {
     if (inView) {

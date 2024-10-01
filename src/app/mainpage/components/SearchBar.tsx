@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { SearchOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Select, Tooltip, Button, Form } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { useQuery } from "@tanstack/react-query";
 
 function SearchBar({
   query,

@@ -12,8 +12,6 @@ export async function POST(req: Request) {
       });
 
       const { result, success } = await response.json();
-      console.log(result);
-      console.log(success);
 
       if (!success) {
         throw new Error(
@@ -23,7 +21,8 @@ export async function POST(req: Request) {
 
       // Save token in session here
       const session = await getSession();
-      session.token = result.token;
+      session.tokenForAPI = result.tokenForAPI;
+      session.tokenForVerification = result.tokenForVerification;
       await session.save();
 
       console.log(session);
@@ -59,5 +58,16 @@ export async function GET() {
   } catch (error) {
     console.error("Error: ", error);
     return NextResponse.json({ status: 500, error });
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await getSession();
+    session.destroy();
+    return NextResponse.json({ status: 200 });
+  } catch (error) {
+    console.error("Error: ", error);
+    return NextResponse.json({ status: 500 });
   }
 }

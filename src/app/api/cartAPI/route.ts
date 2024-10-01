@@ -4,24 +4,32 @@ import {
   LineItemResponseCleaned,
   OrderResponse,
 } from "@/app/interface/OrderInterface";
+import { getTokenFromSession } from "@/app/api/authTokenAPI/utils/getTokenFromSession";
+import { tokenTypes } from "../../../../types/tokenTypes";
 
 export async function POST(req: Request) {
   try {
-    const accessToken = process.env.NEXT_SERVER_JWT_TEST as string;
+    const token = await getTokenFromSession(tokenTypes.tokenTypeAPI);
+    if (!token) {
+      throw new Error("Could not retrieve token from Session.");
+    }
+
     const order = await req.json();
 
     const response = await fetch("http://localhost:5000/api/calculate-order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: token,
       },
       body: JSON.stringify(order),
     });
 
     const { result } = await response.json();
     if (response.status !== 200) {
-      throw new Error("Error calculating the order, check API");
+      throw new Error(
+        "Error calculating the order, check API. An Items price is variable."
+      );
     }
 
     const lineItemDetails: LineItemResponseCleaned[] = result.lineItems.map(

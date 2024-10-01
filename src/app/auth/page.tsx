@@ -1,11 +1,8 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
-import { Form, Button, Flex } from "antd";
+import React, { useCallback } from "react";
+import { Form, Button, Flex, theme } from "antd";
 import Item from "antd/lib/list/Item";
-import { useSearchParams, useRouter } from "next/navigation";
-import { handleGetAndSetToken } from "../clientAPI/authAPI";
-import lodash from "lodash";
 
 function AuthForm() {
   const handleSubmit = useCallback(async () => {
@@ -16,31 +13,10 @@ function AuthForm() {
 
       const { url } = await resp.json();
 
-      window.open(url);
+      window.location.replace(url);
     } catch (error) {
       console.error("Error: ", error);
     }
-  }, []);
-
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const getParamAndCall = useCallback(async () => {
-    if (params.get("code")) {
-      let authCode;
-      authCode = params.get("code") as string;
-      const resp = await handleGetAndSetToken(authCode);
-      if (resp.status === 200) {
-        console.log("Success");
-        router.push("/mainpage");
-      }
-    }
-  }, [params, router]);
-
-  const debouncedGetParamAndCall = lodash.debounce(getParamAndCall, 1500);
-
-  useEffect(() => {
-    debouncedGetParamAndCall();
   }, []);
 
   return (

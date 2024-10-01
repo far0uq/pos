@@ -1,4 +1,4 @@
-import { OrderState } from "../interface/OrderInterface";
+import { OrderState, Order } from "../interface/OrderInterface";
 import { TaxID, ProductID, DiscountID } from "../interface/CartInterface";
 
 const getOrderObject = (
@@ -6,7 +6,7 @@ const getOrderObject = (
   discounts: Map<DiscountID, number>,
   itemDiscountRecord: Map<ProductID, DiscountID[]>,
   quantityCounts: Map<ProductID, number>
-) => {
+): Order => {
   const taxesArray = Array.from(taxes);
   const refinedTaxes = Array.from(
     taxesArray.map((taxID) => {
@@ -50,7 +50,7 @@ const getOrderObject = (
 
   return {
     order: {
-      locationId: process.env.NEXT_PUBLIC_LOCATION_ID,
+      locationId: process.env.NEXT_PUBLIC_LOCATION_ID as string,
       lineItems: refinedLineItems,
       taxes: refinedTaxes,
       discounts: refinedDiscounts,
@@ -78,7 +78,6 @@ export const calculateOrder = async (orderInfo: OrderState) => {
       console.error("Error calculating order");
     }
     const { data } = await resp.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error(error);

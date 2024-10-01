@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 
 export const getSession = async () => {
   interface SessionData {
-    token: string;
+    tokenForVerification: string;
+    tokenForAPI: string;
   }
 
   const sessionOptions: SessionOptions = {

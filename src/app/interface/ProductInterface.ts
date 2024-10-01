@@ -1,9 +1,9 @@
-import { extend } from "lodash";
 
 export interface Product {
   id: string;
   name: string;
   price: number;
+  priceExists: boolean;
   image: string;
 }
 

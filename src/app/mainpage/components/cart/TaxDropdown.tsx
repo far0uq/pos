@@ -16,7 +16,13 @@ const noTaxesOptions: TaxOption[] = [
   },
 ];
 
-function TaxDropdown({ taxes }: { taxes: TaxQuery }) {
+function TaxDropdown({
+  taxes,
+  refreshCart,
+}: {
+  taxes: TaxQuery;
+  refreshCart: () => void;
+}) {
   const addTax = useTotalStore((state) => state.addTax);
   const removeTax = useTotalStore((state) => state.removeTax);
 
@@ -50,6 +56,7 @@ function TaxDropdown({ taxes }: { taxes: TaxQuery }) {
             ? (taxes.taxesData as TaxOption[])
             : noTaxesOptions
         }
+        onChange={refreshCart}
         onSelect={handleAddTax}
         onDeselect={handleRemoveTax}
       />

@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, Image } from "antd";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import React from "react";
+import { Card, Image, Grid, Button } from "antd";
+import {
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
 import { useTotalStore } from "@/app/store/store";
 
 const { Meta } = Card;
+const { useBreakpoint } = Grid;
 
 enum Quantity {
   increase = "add",
@@ -14,46 +19,64 @@ enum Quantity {
 }
 
 function Item({ item }: { item: Product }) {
-  const quantityCount = useTotalStore((state) => state.quantityCounts);
+  const screens = useBreakpoint();
+  const quantityCounts = useTotalStore((state) => state.quantityCounts);
   const addProduct = useTotalStore((state) => state.addProduct);
   const removeProduct = useTotalStore((state) => state.removeProduct);
 
   const toggleQuantity = (type: string) => {
-    if (type === "add") {
-      addProduct(item);
-    } else if (type === "sub") {
-      removeProduct(item);
+    if (item.priceExists) {
+      if (type === "add") {
+        addProduct(item);
+      } else if (type === "sub") {
+        removeProduct(item);
+      }
     }
   };
-
 
   return (
     <Card
       title={item.name}
       style={{ width: "100%" }}
-      actions={[
-        <MinusCircleOutlined
-          key="minus"
-          onClick={() => toggleQuantity(Quantity.decrease)}
-        />,
-        <PlusCircleOutlined
-          key="add"
-          onClick={() => toggleQuantity(Quantity.increase)}
-        />,
-      ]}
+      actions={
+        (quantityCounts.get(item.id) ?? 0) > 0
+          ? [
+              <MinusCircleOutlined
+                key="minus"
+                onClick={() => toggleQuantity(Quantity.decrease)}
+              />,
+              <PlusCircleOutlined
+                key="add"
+                onClick={() => toggleQuantity(Quantity.increase)}
+              />,
+            ]
+          : [<ShoppingCartOutlined key="shopping" />]
+      }
       cover={
-          <Image
-            width={"100%"}
-            height={"auto"}
-            src={item.image}
-            alt="game"
-            preview={false}
-          />      }
+        <Image
+          width={"100%"}
+          height={screens.lg ? "150px" : "300px"}
+          src={item.image}
+          alt="book"
+          preview={false}
+          style={{ objectFit: "cover" }}
+        />
+      }
     >
       <Meta
-        title={item.price ? item.price : "Free"}
-        description={`Quantity: ${quantityCount.get(item.id) ?? 0}`}
+        title={item.price ? item.price : item.priceExists ? "Free" : "Variable"}
+        description={`Quantity: ${quantityCounts.get(item.id) ?? 0}`}
       />
+      <Button
+        style={{
+          marginTop: "20px",
+          width: "100%",
+        }}
+        disabled={(quantityCounts.get(item.id) ?? 0) > 0}
+        onClick={() => toggleQuantity(Quantity.increase)}
+      >
+        Add to Cart
+      </Button>
     </Card>
   );
 }

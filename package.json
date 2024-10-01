@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
     "@ant-design/nextjs-registry": "^1.0.1",
+    "@sentry/nextjs": "^8.32.0",
     "@tanstack/react-query": "^5.53.2",
     "@types/json5": "^0.0.30",
     "@types/prop-types": "^15.7.12",
@@ -19,18 +22,25 @@
     "jose": "^5.8.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "next": "14.2.6",
-    "next-auth": "^4.24.7",
+    "next": "^14.2.13",
     "oauth-pkce": "^0.0.7",
     "oauthapi": "^0.0.1-security",
     "pkce-challenge": "^4.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.13.1",
     "square": "^38.0.0",
+    "ts-node": "^10.9.2",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.7",
+    "@jest/globals": "^29.7.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@types/jest": "^29.5.13",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20.16.5",
@@ -38,8 +48,11 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.6",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.2.5",
     "typescript": "^5"
   }
 }

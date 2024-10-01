@@ -1,7 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-
 export async function handleObtainToken(authCode: string) {
   console.log("Handle Obtain Token" + authCode);
   try {
@@ -36,6 +34,23 @@ export async function handleGetAndSetToken(authCode: string) {
     const resp = await handleObtainToken(authCode);
     if (resp.status === 200) return { status: resp.status };
     else throw new Error("Check obtainToken API for Errors.");
+  } catch (error) {
+    console.error(error);
+    return { status: 500 };
+  }
+}
+
+export async function logoutSession() {
+  try {
+    const resp = await fetch("/api/authTokenAPI", {
+      method: "DELETE",
+    });
+
+    if (resp.status === 200) {
+      return { status: resp.status };
+    } else {
+      throw new Error("Logout failed.");
+    }
   } catch (error) {
     console.error(error);
     return { status: 500 };

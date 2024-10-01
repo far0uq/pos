@@ -1,6 +1,9 @@
 import { DiscountID, ProductID, TaxID } from "./CartInterface";
 
 export interface Order {
+  order: OrderStructure;
+}
+export interface OrderStructure {
   locationId: string;
   lineItems: LineItem[];
   taxes: OrderTax[];
@@ -46,6 +49,11 @@ export interface LineItemResponseCleaned {
   totalTaxMoney: number;
   totalMoney: number;
   totalDiscountMoney: number;
+}
+
+export interface OrderTotalResponseObject {
+  orderResponse: OrderResponse;
+  lineItemDetails: LineItemResponseCleaned[];
 }
 
 export interface LineItemResponse {

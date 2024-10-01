@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Dorya Inc.",
@@ -16,13 +18,42 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701,900,901,1,2&display=swap"
           rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701,900,901,1,2&display=swap"
         />
       </head>
-      
+
       <body style={{ height: "100vh", fontSize: "2vw" }}>
-        <AntdRegistry>{children}</AntdRegistry>
+        <Toaster position="top-right" />
+        <AntdRegistry>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#8b4d0b",
+                colorSuccess: "#0069fc",
+                colorWarning: "#f5222d",
+                colorError: "#ff0004",
+                borderRadius: 4,
+                boxShadow: "none",
+                fontFamily: "'Satoshi', sans-serif",
+              },
+              components: {
+                Button: {
+                  paddingBlock: 22,
+                },
+                Select: {
+                  controlHeight: 46,
+                },
+                Input: {
+                  paddingInline: 24,
+                  controlHeight: 46,
+                },
+              },
+            }}
+          >
+            {children}
+          </ConfigProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

@@ -1,13 +1,18 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Button, Divider, Row, Col, Grid, Drawer } from "antd";
+import { Button, Divider, Row, Col, Grid, Drawer, theme } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import WebsiteLogo from "./doryabooks.svg";
 import CartContainer from "./cart/CartContainer";
 import QueryClientWrapper from "@/app/wrapper/QueryClientWrapper";
+import * as Sentry from "@sentry/react";
+import { logoutSession } from "@/app/clientAPI/authAPI";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const { useBreakpoint } = Grid;
+const { useToken } = theme;
 
 function Navbar() {
   const screens = useBreakpoint();
@@ -15,8 +20,30 @@ function Navbar() {
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
 
+  const { token } = useToken();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const resp = await logoutSession();
+    if (resp.status === 200) {
+      toast.success("Logged Out Successfully.", {
+        style: {
+          border: `1px solid ${token.colorSuccess}`,
+          padding: "16px",
+          color: token.colorSuccess,
+          fontSize: "20px",
+        },
+        iconTheme: {
+          primary: token.colorSuccess,
+          secondary: "white",
+        },
+      });
+      router.push("/");
+    }
+  };
+
   return (
-    <>
+    <Sentry.ErrorBoundary fallback={<p>An error has occured in the Navbar</p>}>
       <Row
         style={{
           width: screens.sm ? "65%" : "90%",
@@ -29,6 +56,7 @@ function Navbar() {
             width={230}
             src={WebsiteLogo}
             alt="Logo"
+            priority={true}
           />
         </Col>
         <Col
@@ -65,13 +93,14 @@ function Navbar() {
               width: "100%",
               fontWeight: "bolder",
             }}
+            onClick={handleLogout}
           >
             Logout
           </Button>
         </Col>
       </Row>
       <Divider style={{ marginTop: "20px" }} />
-    </>
+    </Sentry.ErrorBoundary>
   );
 }
 

@@ -23,9 +23,11 @@ const noDiscountsOptions: DiscountOption[] = [
 function DiscountDropdown({
   discounts,
   productID,
+  refreshCart,
 }: {
   discounts: DiscountQuery;
   productID: string;
+  refreshCart: () => void;
 }) {
   const addDiscount = useTotalStore((state) => state.addDiscount);
   const removeDiscount = useTotalStore((state) => state.removeDiscount);
@@ -60,6 +62,7 @@ function DiscountDropdown({
             ? (discounts.discountsData as DiscountOption[])
             : noDiscountsOptions
         }
+        onChange={() => refreshCart()}
         onSelect={handleAddDiscount}
         onDeselect={handleRemoveDiscount}
       />
