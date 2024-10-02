@@ -5,7 +5,6 @@ import { getTokenFromSession } from "./app/api/authTokenAPI/utils/getTokenFromSe
 import { tokenTypes } from "../types/tokenTypes";
 
 export async function middleware(req: NextRequest) {
-  console.log("Middleware");
   try {
     const token = await getTokenFromSession(tokenTypes.tokenTypeVerification);
 
@@ -29,7 +28,6 @@ export async function middleware(req: NextRequest) {
 
     return NextResponse.redirect(new URL("/mainpage", req.url));
   } catch (error) {
-    console.log(error);
     const pathname = new URL(req.url).pathname;
     if (pathname === "/auth") {
       return NextResponse.next();

@@ -25,8 +25,6 @@ export async function POST(req: Request) {
       session.tokenForVerification = result.tokenForVerification;
       await session.save();
 
-      console.log(session);
-
       return NextResponse.json(
         {
           data: {
@@ -56,8 +54,7 @@ export async function GET() {
     const { result } = await response.json();
     return NextResponse.json({ url: result.url }, { status: 200 });
   } catch (error) {
-    console.error("Error: ", error);
-    return NextResponse.json({ status: 500, error });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 

@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Product } from "@/app/interface/ProductInterface";
 import { useTotalStore } from "@/app/store/store";
+import { fallbackImage } from "../../../../../constants/fallbackImage";
 
 const { Meta } = Card;
 const { useBreakpoint } = Grid;
@@ -60,6 +61,7 @@ function Item({ item }: { item: Product }) {
           alt="book"
           preview={false}
           style={{ objectFit: "cover" }}
+          fallback={fallbackImage}
         />
       }
     >

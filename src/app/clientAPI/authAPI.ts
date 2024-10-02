@@ -1,7 +1,6 @@
 "use client";
 
 export async function handleObtainToken(authCode: string) {
-  console.log("Handle Obtain Token" + authCode);
   try {
     if (authCode) {
       const resp = await fetch("/api/authTokenAPI", {
