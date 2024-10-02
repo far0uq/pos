@@ -10,7 +10,7 @@ function AuthForm() {
   const { handleSubmit } = useHandleSubmit();
   const [clicked, setClicked] = useState(false);
 
-  const handleSetClick = useCallback(() => {
+  const handleSetClickTrue = useCallback(() => {
     if (!clicked) {
       setClicked(true);
     }
@@ -21,14 +21,20 @@ function AuthForm() {
     });
   }, [clicked]);
 
+  const handleSetClickFalse = useCallback(() => {
+    setClicked(false);
+    toast.dismiss();
+  }, [setClicked]);
+
   const callHandleSubmit = useCallback(async () => {
-    handleSetClick();
+    handleSetClickTrue();
     const result = await handleSubmit();
     if (result.status === 200) {
       const { url } = result;
       console.log(url);
       window.location.replace(url);
     } else {
+      handleSetClickFalse();
       toast.error("Error: Could not authenticate, API Offline.", {
         style: {
           fontSize: "20px",
