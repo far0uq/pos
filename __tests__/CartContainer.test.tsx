@@ -24,7 +24,6 @@ jest.mock("@tanstack/react-query", () => ({
 describe("Cart Container", () => {
   afterEach(() => {
     jest.clearAllMocks;
-    jest.useRealTimers();
   });
   it("should handle appropriately when no products are in the cart", () => {
     const queryClient = new QueryClient();
