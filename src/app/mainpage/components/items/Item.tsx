@@ -70,6 +70,7 @@ function Item({ item }: { item: Product }) {
         description={`Quantity: ${quantityCounts.get(item.id) ?? 0}`}
       />
       <Button
+        className="add-to-cart"
         style={{
           marginTop: "20px",
           width: "100%",

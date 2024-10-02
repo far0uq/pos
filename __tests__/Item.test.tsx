@@ -54,7 +54,7 @@ describe("Product Item in ItemContainer", () => {
         <Item item={product} />
       </QueryClientProvider>
     );
-    const addButton = container.getElementsByClassName("anticon-plus-circle");
+    const addButton = container.getElementsByClassName("add-to-cart");
 
     act(() => {
       fireEvent.click(addButton[0]);
@@ -79,13 +79,17 @@ describe("Product Item in ItemContainer", () => {
         <Item item={product} />
       </QueryClientProvider>
     );
+    const addButton = container.getElementsByClassName("add-to-cart");
+    act(() => {
+      fireEvent.click(addButton[0]);
+    });
+
     const removeButton = container.getElementsByClassName(
       "anticon-minus-circle"
     );
 
     let store = useTotalStore.getState();
     act(() => {
-      store.addProduct(product);
       fireEvent.click(removeButton[0]);
     });
 
@@ -110,7 +114,7 @@ describe("Product Item in ItemContainer", () => {
         <Item item={product} />
       </QueryClientProvider>
     );
-    const addButton = container.getElementsByClassName("anticon-plus-circle");
+    const addButton = container.getElementsByClassName("add-to-cart");
 
     act(() => {
       fireEvent.click(addButton[0]);
