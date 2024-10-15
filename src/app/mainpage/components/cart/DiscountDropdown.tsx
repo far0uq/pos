@@ -1,10 +1,15 @@
 import { Select } from "antd";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   DiscountOption,
   DiscountQuery,
 } from "@/app/interface/DiscountInterface";
 import { useTotalStore } from "@/app/store/store";
+import {
+  getCleanedModifierForItem,
+  getCleanedModifierForTotal,
+} from "@/app/clientAPI/modifiersAPI";
+import { modifierTypes } from "../../../../../types/modifierTypes";
 
 const loadingOptions: DiscountOption[] = [
   {
@@ -21,48 +26,84 @@ const noDiscountsOptions: DiscountOption[] = [
 ];
 
 function DiscountDropdown({
-  discounts,
+  discountQuery,
   productID,
   refreshCart,
+  dropDownType,
 }: {
-  discounts: DiscountQuery;
+  discountQuery: DiscountQuery;
   productID: string;
   refreshCart: () => void;
+  dropDownType: "order" | "item";
 }) {
   const addDiscount = useTotalStore((state) => state.addDiscount);
   const removeDiscount = useTotalStore((state) => state.removeDiscount);
+  const discountNames = useTotalStore((state) => state.discountNames);
+  const discounts = useTotalStore((state) => state.discounts);
+  const itemDiscountRecord = useTotalStore((state) => state.itemDiscountRecord);
+  const cartLength = useTotalStore((state) => state.cartLength);
 
-  const handleAddDiscount = (value: string) => {
-    addDiscount(value, productID);
+  const [defaultValues, setDefaultValues] = useState<DiscountOption[]>([]);
+
+  const handleAddDiscount = (value: any) => {
+    addDiscount(value.value, productID, dropDownType, value.label as string);
   };
 
-  const handleRemoveDiscount = (value: string) => {
-    removeDiscount(value, productID);
+  const handleRemoveDiscount = (value: any) => {
+    removeDiscount(value.value, productID, dropDownType);
   };
+
+  const getDefaultDiscounts = useCallback(() => {
+    if (dropDownType === modifierTypes.modifierTypeItem) {
+      return getCleanedModifierForItem(
+        productID,
+        itemDiscountRecord,
+        discountNames
+      );
+    } else if (dropDownType === modifierTypes.modifierTypeOrder) {
+      return getCleanedModifierForTotal(discounts, cartLength, discountNames);
+    }
+    return [];
+  }, [
+    itemDiscountRecord,
+    discounts,
+    cartLength,
+    productID,
+    discountNames,
+    dropDownType,
+  ]);
+
+  useEffect(() => {
+    const values = getDefaultDiscounts();
+    setDefaultValues(values);
+  }, [itemDiscountRecord, discounts, getDefaultDiscounts]);
 
   return (
     <div>
       <Select
+        labelInValue
         mode="multiple"
         placeholder={
-          discounts.discountsAreError
+          discountQuery.discountsAreError
             ? "Failed to fetch discounts"
-            : discounts.discountsAreLoading
+            : discountQuery.discountsAreLoading
             ? "Loading discounts..."
             : "Select discounts"
         }
         defaultValue={[]}
+        value={defaultValues}
         style={{ width: "100%" }}
-        loading={discounts.discountsAreLoading}
-        disabled={discounts.discountsAreError ? true : false}
+        loading={discountQuery.discountsAreLoading}
+        disabled={discountQuery.discountsAreError ? true : false}
         options={
-          discounts.discountsAreLoading
+          discountQuery.discountsAreLoading
             ? loadingOptions
-            : discounts.discountsData && discounts.discountsData.length > 0
-            ? (discounts.discountsData as DiscountOption[])
+            : discountQuery.discountsData &&
+              discountQuery.discountsData.length > 0
+            ? (discountQuery.discountsData as DiscountOption[])
             : noDiscountsOptions
         }
-        onChange={() => refreshCart()}
+        onChange={refreshCart}
         onSelect={handleAddDiscount}
         onDeselect={handleRemoveDiscount}
       />

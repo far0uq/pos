@@ -6,6 +6,8 @@ import { useTotalStore } from "@/app/store/store";
 import DiscountDropdown from "./DiscountDropdown";
 import { DiscountQuery } from "@/app/interface/DiscountInterface";
 import { LineItemResponseCleaned } from "@/app/interface/OrderInterface";
+import TaxDropdown from "./TaxDropdown";
+import { TaxQuery } from "@/app/interface/TaxInterface";
 
 const { Meta } = Card;
 const { useToken } = theme;
@@ -13,13 +15,15 @@ const { useToken } = theme;
 function CartItem({
   item,
   itemQuantity,
-  discounts,
+  discountQuery,
+  taxQuery,
   individualCost,
   refreshCart,
 }: {
   item: Product;
   itemQuantity: number;
-  discounts: DiscountQuery;
+  discountQuery: DiscountQuery;
+  taxQuery: TaxQuery;
   individualCost: LineItemResponseCleaned;
   refreshCart: () => void;
 }) {
@@ -102,9 +106,16 @@ function CartItem({
         </Flex>
 
         <DiscountDropdown
-          discounts={discounts}
+          discountQuery={discountQuery}
           productID={item.id}
           refreshCart={refreshCart}
+          dropDownType="item"
+        />
+        <TaxDropdown
+          taxQuery={taxQuery}
+          productID={item.id}
+          refreshCart={refreshCart}
+          dropDownType="item"
         />
       </Flex>
     </Card>

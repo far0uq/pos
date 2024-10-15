@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SearchOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Select, Tooltip, Button, Form } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useFetchCategories } from "@/app/hooks/useFetchCategories";
 
 function SearchBar({
   query,
@@ -14,23 +15,8 @@ function SearchBar({
   category: string;
   setCategory: (category: string) => void;
 }) {
-  const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
-
-  const fetchCategories = async () => {
-    try {
-      const resp = await fetch("/api/categoriesAPI", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const response = await resp.json();
-      setCategories(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { categories, fetchCategories } = useFetchCategories();
 
   useEffect(() => {
     fetchCategories();

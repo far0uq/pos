@@ -23,6 +23,8 @@ export async function POST(req: Request) {
       const session = await getSession();
       session.tokenForAPI = result.tokenForAPI;
       session.tokenForVerification = result.tokenForVerification;
+      console.log(result.tokenForAPI);
+      console.log(result.tokenForVerification);
       await session.save();
 
       return NextResponse.json(

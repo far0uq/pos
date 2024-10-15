@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 const { useBreakpoint } = Grid;
 const { useToken } = theme;
 
-function Navbar() {
+function NavbarContainer() {
   const screens = useBreakpoint();
   const [open, setOpen] = useState(false);
   const openDrawer = () => setOpen(true);
@@ -104,4 +104,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default NavbarContainer;

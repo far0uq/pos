@@ -14,8 +14,8 @@ export interface LineItem {
   quantity: string;
   catalogObjectId: string;
   itemType: string;
-  appliedTaxes: AppliedTax[];
-  appliedDiscounts: AppliedDiscount[];
+  appliedTaxes: AppliedTax[] | [];
+  appliedDiscounts: AppliedDiscount[] | [];
 }
 
 export interface OrderTax {
@@ -79,9 +79,11 @@ export interface Amount {
 }
 
 export interface OrderState {
-  taxes: Set<TaxID>;
+  cartLength: number;
+  taxes: Map<TaxID, number>;
   discounts: Map<DiscountID, number>;
   itemDiscountRecord: Map<ProductID, DiscountID[]>;
+  itemTaxRecord: Map<ProductID, TaxID[]>;
   quantityCounts: Map<ProductID, number>;
 }
 

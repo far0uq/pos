@@ -1,6 +1,12 @@
+import {
+  getCleanedModifierForItem,
+  getCleanedModifierForTotal,
+} from "@/app/clientAPI/modifiersAPI";
 import { TaxOption, TaxQuery } from "@/app/interface/TaxInterface";
 import { useTotalStore } from "@/app/store/store";
 import { Select } from "antd";
+import { modifierTypes } from "../../../../../types/modifierTypes";
+import { useCallback, useEffect, useState } from "react";
 
 const loadingOptions: TaxOption[] = [
   {
@@ -17,43 +23,70 @@ const noTaxesOptions: TaxOption[] = [
 ];
 
 function TaxDropdown({
-  taxes,
+  taxQuery,
+  productID,
   refreshCart,
+  dropDownType,
 }: {
-  taxes: TaxQuery;
+  taxQuery: TaxQuery;
+  productID: string;
   refreshCart: () => void;
+  dropDownType: "order" | "item";
 }) {
   const addTax = useTotalStore((state) => state.addTax);
   const removeTax = useTotalStore((state) => state.removeTax);
+  const taxNames = useTotalStore((state) => state.taxNames);
+  const taxes = useTotalStore((state) => state.taxes);
+  const itemTaxRecord = useTotalStore((state) => state.itemTaxRecord);
+  const cartLength = useTotalStore((state) => state.cartLength);
 
-  const handleAddTax = (value: string) => {
-    addTax(value);
+  const [defaultValues, setDefaultValues] = useState<TaxOption[]>([]);
+
+  const handleAddTax = (value: any) => {
+    addTax(value.value, productID, dropDownType, value.label);
   };
 
-  const handleRemoveTax = (value: string) => {
-    removeTax(value);
+  const handleRemoveTax = (value: any) => {
+    removeTax(value.value, productID, dropDownType);
   };
+
+  const getDefaultTaxes = useCallback(() => {
+    if (dropDownType === modifierTypes.modifierTypeItem) {
+      return getCleanedModifierForItem(productID, itemTaxRecord, taxNames);
+    } else if (dropDownType === modifierTypes.modifierTypeOrder) {
+      return getCleanedModifierForTotal(taxes, cartLength, taxNames);
+    } else {
+      return [];
+    }
+  }, [dropDownType, productID, itemTaxRecord, taxNames, taxes, cartLength]);
+
+  useEffect(() => {
+    const values = getDefaultTaxes();
+    setDefaultValues(values);
+  }, [itemTaxRecord, taxes, getDefaultTaxes]);
 
   return (
     <div>
       <Select
+        labelInValue
         mode="multiple"
         placeholder={
-          taxes.taxesAreError
+          taxQuery.taxesAreError
             ? "Failed to fetch taxes"
-            : taxes.taxesAreLoading
+            : taxQuery.taxesAreLoading
             ? "Loading taxes..."
             : "Select taxes"
         }
         defaultValue={[]}
+        value={defaultValues}
         style={{ width: "100%" }}
-        loading={taxes.taxesAreLoading}
-        disabled={taxes.taxesAreError ? true : false}
+        loading={taxQuery.taxesAreLoading}
+        disabled={taxQuery.taxesAreError ? true : false}
         options={
-          taxes.taxesAreLoading
+          taxQuery.taxesAreLoading
             ? loadingOptions
-            : taxes.taxesData && taxes.taxesData.length > 0
-            ? (taxes.taxesData as TaxOption[])
+            : taxQuery.taxesData && taxQuery.taxesData.length > 0
+            ? (taxQuery.taxesData as TaxOption[])
             : noTaxesOptions
         }
         onChange={refreshCart}

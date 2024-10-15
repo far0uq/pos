@@ -1,10 +1,10 @@
-import Navbar from "./components/Navbar";
+import NavbarContainer from "./components/NavbarContainer";
 import ProductBrowser from "./components/ProductBrowser";
 
 function MainPage() {
   return (
     <>
-      <Navbar />
+      <NavbarContainer />
       <ProductBrowser />
     </>
   );

@@ -13,21 +13,27 @@ import { useFetchTaxes } from "@/app/hooks/useFetchTaxes";
 import { getProductMoneyDetails } from "@/app/clientAPI/productAPI";
 import { useCartMutation } from "@/app/hooks/useCartMutation";
 import { useEffect } from "react";
+import DiscountDropdown from "./DiscountDropdown";
 
 function CartContainer() {
   const products = useTotalStore((state) => state.cartProducts);
   const quantityCounts = useTotalStore((state) => state.quantityCounts);
   const taxes = useTotalStore((state) => state.taxes);
   const discounts = useTotalStore((state) => state.discounts);
+  const itemTaxRecord = useTotalStore((state) => state.itemTaxRecord);
   const itemDiscountRecord = useTotalStore((state) => state.itemDiscountRecord);
-
   const discountQuery: DiscountQuery = useFetchDiscounts();
   const taxQuery: TaxQuery = useFetchTaxes();
 
+  console.log("tax records changed");
+  console.log(itemTaxRecord);
+
   const { data, isError, isPending, mutate } = useCartMutation(
+    products.length,
     taxes,
     discounts,
     itemDiscountRecord,
+    itemTaxRecord,
     quantityCounts
   );
 
@@ -50,7 +56,8 @@ function CartContainer() {
                 key={product.id}
                 item={product}
                 itemQuantity={quantityCounts.get(product.id) ?? 0}
-                discounts={discountQuery}
+                discountQuery={discountQuery}
+                taxQuery={taxQuery}
                 individualCost={productMoneyDetails as LineItemResponseCleaned}
                 refreshCart={mutate}
               />
@@ -59,7 +66,19 @@ function CartContainer() {
 
           <Card>
             <Flex gap="large" vertical>
-              <TaxDropdown taxes={taxQuery} refreshCart={mutate} />
+              <DiscountDropdown
+                discountQuery={discountQuery}
+                productID="none"
+                refreshCart={mutate}
+                dropDownType="order"
+              />
+
+              <TaxDropdown
+                taxQuery={taxQuery}
+                productID="none"
+                refreshCart={mutate}
+                dropDownType="order"
+              />
 
               {isError && <p>Error calculating order</p>}
               {isPending && <p>Calculating order...</p>}
