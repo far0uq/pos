@@ -25,9 +25,6 @@ function CartContainer() {
   const discountQuery: DiscountQuery = useFetchDiscounts();
   const taxQuery: TaxQuery = useFetchTaxes();
 
-  console.log("tax records changed");
-  console.log(itemTaxRecord);
-
   const { data, isError, isPending, mutate } = useCartMutation(
     products.length,
     taxes,

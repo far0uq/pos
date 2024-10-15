@@ -210,7 +210,7 @@ export const createCartStore: StateCreator<CartSlice> = (set, get) => ({
 
         return {
           taxes: updatedTaxes,
-          itemTaxRecord: new Map([...state.itemTaxRecord]),
+          itemTaxRecord: updatedTaxRecord,
           taxNames: updatedTaxNames,
         };
       });
@@ -327,6 +327,7 @@ export const createCartStore: StateCreator<CartSlice> = (set, get) => ({
         return {
           discounts: updatedDiscounts,
           itemDiscountRecord: updatedDiscountRecord,
+          discountNames: updatedDiscountNames,
         };
       });
     } else if (type === "item") {

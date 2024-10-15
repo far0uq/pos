@@ -111,10 +111,12 @@ export const calculateOrder = async (orderInfo: OrderState) => {
     orderInfo.cartLength,
     orderInfo.taxes,
     orderInfo.discounts,
-    orderInfo.itemDiscountRecord,
     orderInfo.itemTaxRecord,
+    orderInfo.itemDiscountRecord,
     orderInfo.quantityCounts
   );
+
+  console.log(order);
 
   try {
     const resp = await fetch("/api/cartAPI", {

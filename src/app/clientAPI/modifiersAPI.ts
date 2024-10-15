@@ -17,8 +17,6 @@ export const getCleanedModifierForTotal = (
   cartLength: number,
   modifierNames: Map<string, string>
 ) => {
-  console.log(cartLength);
-  console.log(modifiers);
   const modifierArray = Array.from(modifiers);
   if (modifierArray.length === 0) return [];
 
